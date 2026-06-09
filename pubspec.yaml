@@ -1,0 +1,70 @@
+name: smart_pocket
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  
+
+  # Firebase
+  firebase_core: ^3.15.2
+  firebase_auth: ^5.7.0
+  cloud_firestore: ^5.6.12
+
+  # State Management
+  provider: ^6.1.2
+
+  # Navigation
+  go_router: ^13.2.5
+
+  # Utilities
+  intl: ^0.19.0
+  google_sign_in: ^6.3.0
+  shared_preferences: ^2.5.5
+  local_auth: ^2.3.0
+  uuid: ^4.5.1
+
+  # Charts & Reports
+  fl_chart: ^0.69.0
+  pdf: ^3.12.0
+  printing: ^5.14.3
+  path_provider: ^2.1.5
+  permission_handler: ^11.4.0
+  share_plus: ^10.1.4
+  open_filex: ^4.7.0
+  file_picker: ^8.1.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/appLogo_light.png"
+  adaptive_icon_background: "#EAF1FF"
+  adaptive_icon_foreground: "assets/appLogo_light.png"
+  adaptive_icon_monochrome: "assets/appLogo_light.png"
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/appLogo_light.png"
+    background_color: "#EAF1FF"
+    theme_color: "#2563EB"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/appLogo_light.png
+    - assets/appLogo_dark.png
+    - lib/core/utils/provider_logo/

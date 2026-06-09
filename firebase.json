@@ -1,0 +1,26 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "smart-pocket-a58e0",
+          "appId": "1:992557937003:android:51abecbd2a98a2c4095c2e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "smart-pocket-a58e0",
+          "configurations": {
+            "android": "1:992557937003:android:51abecbd2a98a2c4095c2e",
+            "web": "1:992557937003:web:499e8d6905f1b8c0095c2e",
+            "windows": "1:992557937003:web:0e448a84b1943de0095c2e"
+          }
+        }
+      }
+    }
+  }
+}
