@@ -31,6 +31,14 @@ workflows. It uses Firebase Authentication and Cloud Firestore for user data.
    it with FlutterFire CLI if you use a different Firebase project.
 5. Run `flutter run`.
 
+## APK
+
+The latest Android release APK is included at:
+
+```text
+releases/smart-pocket-release.apk
+```
+
 ## Checks
 
 ```powershell
