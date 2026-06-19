@@ -6,6 +6,19 @@ class CategoryController extends ChangeNotifier {
   final CategoryService _service;
   CategoryController(this._service);
 
+  static const List<CategorySeed> _defaultCategories = [
+    CategorySeed(name: 'Food', type: 'expense', icon: 'food'),
+    CategorySeed(name: 'Transport', type: 'expense', icon: 'transport'),
+    CategorySeed(name: 'Shopping', type: 'expense', icon: 'shopping'),
+    CategorySeed(name: 'Bills', type: 'expense', icon: 'bill'),
+    CategorySeed(name: 'Health', type: 'expense', icon: 'health'),
+    CategorySeed(name: 'Education', type: 'expense', icon: 'education'),
+    CategorySeed(name: 'Home', type: 'expense', icon: 'home'),
+    CategorySeed(name: 'Salary', type: 'income', icon: 'salary'),
+    CategorySeed(name: 'Investment', type: 'income', icon: 'trending_up'),
+    CategorySeed(name: 'Business', type: 'income', icon: 'business'),
+  ];
+
   bool isLoading = false;
   String? errorMessage;
   List<CategoryModel> categories = [];
@@ -30,30 +43,34 @@ class CategoryController extends ChangeNotifier {
   }
 
   Future<void> handleAuthChanged() async {
-    if (categories.isNotEmpty) {
-      categories = [];
+    categories = [];
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
+    try {
+      await _service.ensureDefaultCategories(_defaultCategories);
+      categories = await _service.getAllCategories();
+    } catch (e) {
+      errorMessage = e.toString();
+    } finally {
+      isLoading = false;
       notifyListeners();
     }
-    await refresh();
   }
 
   Future<void> ensureDefaultCategories() async {
+    isLoading = true;
+    errorMessage = null;
+    notifyListeners();
+
     try {
-      await _service.ensureDefaultCategories([
-        const CategorySeed(name: 'Food', type: 'expense', icon: 'food'),
-        const CategorySeed(name: 'Transport', type: 'expense', icon: 'transport'),
-        const CategorySeed(name: 'Shopping', type: 'expense', icon: 'shopping'),
-        const CategorySeed(name: 'Bills', type: 'expense', icon: 'bill'),
-        const CategorySeed(name: 'Health', type: 'expense', icon: 'health'),
-        const CategorySeed(name: 'Education', type: 'expense', icon: 'education'),
-        const CategorySeed(name: 'Home', type: 'expense', icon: 'home'),
-        const CategorySeed(name: 'Salary', type: 'income', icon: 'salary'),
-        const CategorySeed(name: 'Investment', type: 'income', icon: 'trending_up'),
-        const CategorySeed(name: 'Business', type: 'income', icon: 'business'),
-      ]);
-      await refresh();
+      await _service.ensureDefaultCategories(_defaultCategories);
+      categories = await _service.getAllCategories();
     } catch (e) {
       errorMessage = e.toString();
+    } finally {
+      isLoading = false;
       notifyListeners();
     }
   }
@@ -69,11 +86,7 @@ class CategoryController extends ChangeNotifier {
       return;
     }
 
-    await _service.addCategory(
-      name: name.trim(),
-      type: type,
-      icon: icon,
-    );
+    await _service.addCategory(name: name.trim(), type: type, icon: icon);
     await refresh();
   }
 

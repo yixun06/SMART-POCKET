@@ -46,7 +46,14 @@ class AccountService {
 
   Future<void> ensureDefaultAccount(String uid) async {
     final ref = _accounts(uid).doc('default_cash');
-    await ref.set({
+    DocumentSnapshot<Map<String, dynamic>>? snap;
+    try {
+      snap = await ref.get();
+    } catch (_) {
+      snap = null;
+    }
+    final data = snap?.data();
+    final payload = <String, dynamic>{
       CommonFields.id: 'default_cash',
       CommonFields.userId: uid,
       AccountFields.name: 'Cash',
@@ -57,7 +64,12 @@ class AccountService {
       AccountFields.isLiquid: true,
       AccountFields.balance: FieldValue.increment(0),
       CommonFields.updatedAt: FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    };
+    if (snap != null &&
+        (!snap.exists || data?[CommonFields.createdAt] == null)) {
+      payload[CommonFields.createdAt] = FieldValue.serverTimestamp();
+    }
+    await ref.set(payload, SetOptions(merge: true));
   }
 
   Future<void> ensureAssetProfile(String uid) async {
@@ -158,10 +170,8 @@ class AccountService {
   }
 
   Stream<List<Map<String, dynamic>>> watchAccounts(String uid) {
-    return _accounts(
-      uid,
-    ).orderBy(CommonFields.createdAt, descending: false).snapshots().map((s) {
-      return s.docs.map((d) {
+    return _accounts(uid).snapshots().map((s) {
+      final rows = s.docs.map((d) {
         final m = d.data();
         final type = (m[AccountFields.type] ?? 'cash').toString();
         final createdRaw = m[CommonFields.createdAt];
@@ -186,6 +196,16 @@ class AccountService {
           'createdAtMillis': createdAtMillis,
         };
       }).toList();
+      rows.sort((a, b) {
+        final aMillis = (a['createdAtMillis'] as num?)?.toInt() ?? 0;
+        final bMillis = (b['createdAtMillis'] as num?)?.toInt() ?? 0;
+        final timeCompare = aMillis.compareTo(bMillis);
+        if (timeCompare != 0) return timeCompare;
+        return (a['_id'] ?? '').toString().compareTo(
+          (b['_id'] ?? '').toString(),
+        );
+      });
+      return rows;
     });
   }
 
@@ -427,9 +447,7 @@ class AccountService {
     bool excludeInvestment = false,
   }) async {
     final normalizedTarget = _normalizeTag(tag);
-    final snap = await _accounts(
-      uid,
-    ).orderBy(CommonFields.createdAt, descending: false).get();
+    final snap = await _accounts(uid).get();
 
     final filtered = snap.docs
         .where((d) {
@@ -469,7 +487,9 @@ class AccountService {
       final bMillis = bCreated is Timestamp
           ? bCreated.millisecondsSinceEpoch
           : 0;
-      return aMillis.compareTo(bMillis);
+      final timeCompare = aMillis.compareTo(bMillis);
+      if (timeCompare != 0) return timeCompare;
+      return (a['_id'] ?? '').toString().compareTo((b['_id'] ?? '').toString());
     });
     return filtered;
   }

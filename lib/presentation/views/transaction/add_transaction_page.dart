@@ -76,15 +76,20 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     if (id == null) return null;
     for (final raw in accounts) {
       final a = Map<String, dynamic>.from(raw as Map);
-      final aid = (a['_id'] ?? a['id']).toString();
+      final aid = _accountIdOf(a);
       if (aid == id) return a;
     }
     return null;
   }
 
+  String _accountIdOf(Map<String, dynamic> a) =>
+      (a[CommonFields.id] ?? a['id'] ?? a['docId'] ?? '').toString();
+
   bool _isInvestmentAccount(Map<String, dynamic>? a) {
     if (a == null) return false;
-    return (a['type'] ?? '').toString().toLowerCase() == 'investment';
+    final type = (a[AccountFields.type] ?? '').toString().toLowerCase();
+    final kind = (a[AccountFields.kind] ?? '').toString().toLowerCase();
+    return type == 'investment' || kind == 'investment';
   }
 
   Widget _accountAvatar(Map<String, dynamic> a, {double size = 30}) {
@@ -303,6 +308,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     if (isLazyMode && _type == 'transfer') {
       _type = 'expense';
     }
+    final isTransfer = _type == 'transfer';
 
     final allAccounts = tx.accounts
         .map((e) => Map<String, dynamic>.from(e as Map))
@@ -310,26 +316,40 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     final categories = cat.categories.where((c) => c.type == _type).toList();
 
     final eligibleAccounts = allAccounts
-        .where(
-          (a) => (a['type'] ?? '').toString().toLowerCase() != 'investment',
-        )
+        .where((a) => !_isInvestmentAccount(a))
         .toList();
 
-    final sourcePool = eligibleAccounts;
+    final sourcePool = eligibleAccounts
+        .where((a) => _accountIdOf(a).isNotEmpty)
+        .toList();
+    final destinationPool = allAccounts
+        .where((a) => _accountIdOf(a).isNotEmpty)
+        .toList();
+    final sourceIds = sourcePool.map(_accountIdOf).toSet();
+    final destinationIds = destinationPool.map(_accountIdOf).toSet();
 
-    if (!isLazyMode) {
-      if (_accountId == null && sourcePool.isNotEmpty) {
-        _accountId = (sourcePool.first['_id'] ?? sourcePool.first['id'])
-            .toString();
-      }
+    if (!isLazyMode &&
+        (_accountId == null || !sourceIds.contains(_accountId))) {
+      _accountId = sourceIds.isNotEmpty ? sourceIds.first : null;
     }
 
-    if (_toAccountId == null && allAccounts.length > 1) {
-      final fallback = allAccounts.firstWhere(
-        (a) => (a['_id'] ?? a['id']).toString() != _accountId,
-        orElse: () => allAccounts.first,
-      );
-      _toAccountId = (fallback['_id'] ?? fallback['id']).toString();
+    if (isTransfer) {
+      if (_toAccountId != null && !destinationIds.contains(_toAccountId)) {
+        _toAccountId = null;
+      }
+      if (_toAccountId == null || _toAccountId == _accountId) {
+        String? fallbackId;
+        for (final a in destinationPool) {
+          final id = _accountIdOf(a);
+          if (id != _accountId) {
+            fallbackId = id;
+            break;
+          }
+        }
+        _toAccountId = fallbackId;
+      }
+    } else {
+      _toAccountId = null;
     }
 
     if (_categoryId == null && categories.isNotEmpty) {
@@ -343,13 +363,11 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     if (!isLazyMode &&
         _type == 'expense' &&
         _isInvestmentAccount(selectedSource)) {
-      _accountId = eligibleAccounts.isNotEmpty
-          ? (eligibleAccounts.first['_id'] ?? eligibleAccounts.first['id'])
-                .toString()
+      _accountId = sourcePool.isNotEmpty
+          ? _accountIdOf(sourcePool.first)
           : null;
     }
 
-    final isTransfer = _type == 'transfer';
     final hasAccount = isLazyMode || _accountId != null;
     final hasToAccount = _toAccountId != null && _toAccountId != _accountId;
     final hasCategory = isLazyMode || _categoryId != null;
@@ -449,20 +467,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                           if (_isInvestmentAccount(selected)) {
                             final candidates = tx.accounts
                                 .map((e) => Map<String, dynamic>.from(e as Map))
-                                .where(
-                                  (a) =>
-                                      (a['type'] ?? '')
-                                          .toString()
-                                          .toLowerCase() !=
-                                      'investment',
-                                )
+                                .where((a) => !_isInvestmentAccount(a))
+                                .where((a) => _accountIdOf(a).isNotEmpty)
                                 .toList();
 
                             setState(() {
                               _accountId = candidates.isNotEmpty
-                                  ? (candidates.first['_id'] ??
-                                            candidates.first['id'])
-                                        .toString()
+                                  ? _accountIdOf(candidates.first)
                                   : null;
                             });
 
@@ -551,12 +562,27 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    _categoryQuickPicker(
-                      categories: categories,
-                      selectedId: _categoryId,
-                      onSelect: (id) => setState(() => _categoryId = id),
-                    ),
-                    if (!hasCategory)
+                    if (cat.isLoading && categories.isEmpty)
+                      _categoryUnavailableState(
+                        isLoading: true,
+                        errorMessage: null,
+                        onRetry: () {},
+                      )
+                    else if (categories.isEmpty)
+                      _categoryUnavailableState(
+                        isLoading: false,
+                        errorMessage: cat.errorMessage,
+                        onRetry: () => context
+                            .read<CategoryController>()
+                            .ensureDefaultCategories(),
+                      )
+                    else
+                      _categoryQuickPicker(
+                        categories: categories,
+                        selectedId: _categoryId,
+                        onSelect: (id) => setState(() => _categoryId = id),
+                      ),
+                    if (!hasCategory && !cat.isLoading && categories.isNotEmpty)
                       Padding(
                         padding: EdgeInsets.only(top: 6),
                         child: Text(
@@ -577,7 +603,7 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       items: sourcePool
                           .map(
                             (a) => DropdownMenuItem(
-                              value: (a['_id'] ?? a['id']).toString(),
+                              value: _accountIdOf(a),
                               child: _accountMenuItem(a),
                             ),
                           )
@@ -607,10 +633,10 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                       initialValue: _toAccountId,
                       isExpanded: true,
                       decoration: _inputDeco(),
-                      items: allAccounts
+                      items: destinationPool
                           .map(
                             (a) => DropdownMenuItem(
-                              value: (a['_id'] ?? a['id']).toString(),
+                              value: _accountIdOf(a),
                               child: _accountMenuItem(a),
                             ),
                           )
@@ -844,21 +870,13 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     final amount = _parsedAmount;
     if (amount == null || amount <= 0) return;
     final tag = _lazyCategoryTagForType();
-    final AllocationResult? preview = await _getLazyPreviewFuture(tx);
-    if (!mounted) return;
-    if (preview == null || !preview.success || preview.allocation.isEmpty) {
-      final message = (preview?.errorMessage ?? 'Allocation preview failed')
-          .toString();
-      final friendly = tx.isTransientError(message)
-          ? 'Network is temporarily unavailable. Please check connection and retry.'
-          : message;
-      messenger.showSnackBar(SnackBar(content: Text(friendly)));
-      return;
-    }
 
     setState(() => _submitting = true);
 
     try {
+      final AllocationResult? preview = await _getLazyPreviewFuture(tx);
+      if (!mounted) return;
+
       final ok = await tx.addTxLazyMode(
         categoryTag: tag,
         categoryId: null,
@@ -880,10 +898,17 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
         return;
       }
 
-      final split = tx.lastCommittedAllocation ?? preview.allocation;
+      final split =
+          tx.lastCommittedAllocation ??
+          preview?.allocation ??
+          const <String, double>{};
+      final order = tx.deductionOrder ?? preview?.deductionOrder ?? split.keys;
       final fallback =
-          tx.lastCommittedFallbackWarnings ?? preview.fallbackWarnings;
-      final splitText = preview.deductionOrder
+          tx.lastCommittedFallbackWarnings ??
+          preview?.fallbackWarnings ??
+          const <String>[];
+      final splitText = order
+          .where((accountId) => split.containsKey(accountId))
           .map((accountId) {
             final account = _findAccountById(tx.accounts, accountId);
             final accountName = (account?['name'] ?? accountId).toString();
@@ -896,7 +921,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       messenger.showSnackBar(
         SnackBar(
           content: Text(
-            'RM${amount.toStringAsFixed(2)} $actionText. $splitText$fallbackText',
+            'RM${amount.toStringAsFixed(2)} $actionText.'
+            '${splitText.isEmpty ? '' : ' $splitText'}$fallbackText',
           ),
         ),
       );
@@ -933,6 +959,99 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(color: colors.outlineVariant),
+      ),
+    );
+  }
+
+  Widget _categoryUnavailableState({
+    required bool isLoading,
+    required String? errorMessage,
+    required VoidCallback onRetry,
+  }) {
+    final colors = Theme.of(context).colorScheme;
+    final hasError = (errorMessage ?? '').trim().isNotEmpty;
+    final title = isLoading
+        ? 'Preparing categories'
+        : hasError
+        ? 'Category sync failed'
+        : 'No categories available';
+    final message = isLoading
+        ? 'Default categories are being loaded.'
+        : hasError
+        ? errorMessage!.trim()
+        : 'Restore the default category set to continue.';
+    final messageColor = hasError ? colors.error : colors.onSurfaceVariant;
+
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 92),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colors.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: isLoading
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: colors.primary,
+                          ),
+                        )
+                      : Icon(
+                          hasError
+                              ? Icons.error_outline_rounded
+                              : Icons.category_outlined,
+                          color: hasError ? colors.error : colors.primary,
+                        ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      message,
+                      style: TextStyle(color: messageColor, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (!isLoading) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('Restore Defaults'),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -1015,9 +1134,8 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
     final txc = context.read<TransactionController>();
     final src = _findAccountById(txc.accounts, _accountId);
-    final srcType = (src?['type'] ?? '').toString().toLowerCase();
 
-    if (_type == 'expense' && srcType == 'investment') {
+    if (_type == 'expense' && _isInvestmentAccount(src)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Investment account cannot be used for expense'),
