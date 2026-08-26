@@ -1,0 +1,338 @@
+{"kind":"deck","id":"pr/ilk5us","name":"Deck"}
+{"kind":"layout","layoutId":"34decc19-1cb8-4fbd-a0fe-3f24f3aef2dc","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"49317fe5-b981-4f31-a07b-58243aa278ab","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/xbiv4w","slide":1,"title":"SMART POCKET","textShapes":7}
+{"kind":"shape","id":"sh/idonyd0z","slide":1,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/t47y1kre","slide":1,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/0je9cvix","slide":1,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/b6xkf6dc","slide":1,"text":"SMART POCKET","textPreview":"SMART POCKET","textChars":12,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/il0rqd4v","slide":1,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/0rqd4vmt","slide":1,"text":"SMART\nPOCKET","textPreview":"SMART | POCKET","textChars":12,"textLines":2,"bbox":[62,276,510,158]}
+{"kind":"shape","id":"sh/bi9s36hc","slide":1,"bbox":[66,450,214,4]}
+{"kind":"textbox","id":"sh/ixczed8v","slide":1,"text":"Track. Plan. Grow.","textPreview":"Track. Plan. Grow.","textChars":18,"textLines":1,"bbox":[66,474,440,42]}
+{"kind":"textbox","id":"sh/s72x4nap","slide":1,"text":"A multi-modal personal finance app that reduces recording friction while improving financial awareness.","textPreview":"A multi-modal personal finance app that reduces recording friction while improving financial awareness.","textChars":103,"textLines":1,"bbox":[68,538,545,58]}
+{"kind":"shape","id":"sh/lszqtcj6","slide":1,"name":"glass-card","bbox":[752,120,210,448]}
+{"kind":"textbox","id":"sh/3m94fu18","slide":1,"text":"Dashboard","textPreview":"Dashboard","textChars":9,"textLines":1,"bbox":[754,576,206,24]}
+{"kind":"shape","id":"sh/sji5snel","slide":1,"name":"glass-card","bbox":[957,142,186,394]}
+{"kind":"textbox","id":"sh/adsji5sn","slide":1,"text":"Operating Mode","textPreview":"Operating Mode","textChars":14,"textLines":1,"bbox":[959,544,182,24]}
+{"kind":"image","id":"im/c7u54zid","slide":1,"name":"","alt":"Smart Pocket logo","bbox":[66,166,92,92]}
+{"kind":"image","id":"im/l0rqd4vm","slide":1,"name":"","geometry":"roundRect","alt":"Dashboard","bbox":[760,128,194,432]}
+{"kind":"image","id":"im/eloj2t83","slide":1,"name":"","geometry":"roundRect","alt":"Operating Mode","bbox":[965,150,170,378]}
+{"kind":"notes","id":"nt/xbiv4w","slide":1,"text":""}
+{"kind":"slide","id":"sl/rmohru","slide":2,"title":"THE PROBLEM","textShapes":9}
+{"kind":"shape","id":"sh/vy90je9c","slide":2,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/oj2t83it","slide":2,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/d4vmtwra","slide":2,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/61032lsz","slide":2,"text":"THE PROBLEM","textPreview":"THE PROBLEM","textChars":11,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/vmtwra5g","slide":2,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/o7qpg3ex","slide":2,"text":"The Personal Finance Dilemma","textPreview":"The Personal Finance Dilemma","textChars":28,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/dsji5sne","slide":2,"text":"Young adults do not only need to record money. They need a recording method they can sustain.","textPreview":"Young adults do not only need to record money. They need a recording method they can sustain.","textChars":93,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/6tovahoz","slide":2,"name":"glass-card","bbox":[92,258,500,126]}
+{"kind":"shape","id":"sh/vahoza1g","slide":2,"bbox":[114,280,58,4]}
+{"kind":"textbox","id":"sh/7qpg3ex0","slide":2,"text":"Rigidity Gap","textPreview":"Rigidity Gap","textChars":12,"textLines":1,"bbox":[114,294,456,28]}
+{"kind":"textbox","id":"sh/i5sneloj","slide":2,"text":"Manual tracking asks for too many details, so users delay recording or abandon the habit.","textPreview":"Manual tracking asks for too many details, so users delay recording or abandon the habit.","textChars":89,"textLines":1,"bbox":[114,326,456,48]}
+{"kind":"shape","id":"sh/pwb2hwfy","slide":2,"name":"glass-card","bbox":[688,258,500,126]}
+{"kind":"shape","id":"sh/0bi9s36h","slide":2,"bbox":[710,280,58,4]}
+{"kind":"textbox","id":"sh/7y1kre1w","slide":2,"text":"Behavioral Gap","textPreview":"Behavioral Gap","textChars":14,"textLines":1,"bbox":[710,294,456,28]}
+{"kind":"textbox","id":"sh/ed8v6psf","slide":2,"text":"Cashless spending happens quickly, but awareness comes too late when data is incomplete.","textPreview":"Cashless spending happens quickly, but awareness comes too late when data is incomplete.","textChars":88,"textLines":1,"bbox":[710,326,456,48]}
+{"kind":"textbox","id":"sh/p4r65wju","slide":2,"text":"Smart Pocket addresses both gaps by offering flexible tracking depth and immediate feedback.","textPreview":"Smart Pocket addresses both gaps by offering flexible tracking depth and immediate feedback.","textChars":92,"textLines":1,"bbox":[190,520,900,50]}
+{"kind":"notes","id":"nt/rmohru","slide":2,"text":""}
+{"kind":"slide","id":"sl/0a88zy","slide":3,"title":"PRODUCT SOLUTION","textShapes":13}
+{"kind":"shape","id":"sh/8z25kb6x","slide":3,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/je9cvixc","slide":3,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/qtcj6tov","slide":3,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/xs72x4na","slide":3,"text":"PRODUCT SOLUTION","textPreview":"PRODUCT SOLUTION","textChars":16,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/87ed8bat","slide":3,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/fmlkjm1c","slide":3,"text":"Closing the Gap with Smart Pocket","textPreview":"Closing the Gap with Smart Pocket","textChars":33,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/q1orytsv","slide":3,"text":"The app combines fast capture, mode flexibility and visual financial feedback in one mobile workflow.","textPreview":"The app combines fast capture, mode flexibility and visual financial feedback in one mobile workflow.","textChars":101,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/x4nap4r6","slide":3,"name":"glass-card","bbox":[540,160,204,434]}
+{"kind":"textbox","id":"sh/mp0bi9s3","slide":3,"text":"Main dashboard","textPreview":"Main dashboard","textChars":14,"textLines":1,"bbox":[542,602,200,24]}
+{"kind":"shape","id":"sh/bat47y1k","slide":3,"name":"glass-card","bbox":[90,238,370,126]}
+{"kind":"shape","id":"sh/4vmtwra5","slide":3,"bbox":[112,260,58,4]}
+{"kind":"textbox","id":"sh/tgfmlkjm","slide":3,"text":"Frictionless Entry","textPreview":"Frictionless Entry","textChars":18,"textLines":1,"bbox":[112,274,326,28]}
+{"kind":"textbox","id":"sh/m1cfa9w3","slide":3,"text":"Shortcuts and simplified forms reduce repeated manual input.","textPreview":"Shortcuts and simplified forms reduce repeated manual input.","textChars":60,"textLines":1,"bbox":[112,306,326,48]}
+{"kind":"shape","id":"sh/bm58z25k","slide":3,"name":"glass-card","bbox":[820,238,370,126]}
+{"kind":"shape","id":"sh/47y1kre1","slide":3,"bbox":[842,260,58,4]}
+{"kind":"textbox","id":"sh/tsvu9kni","slide":3,"text":"Multi-Mode Engine","textPreview":"Multi-Mode Engine","textChars":17,"textLines":1,"bbox":[842,274,326,28]}
+{"kind":"textbox","id":"sh/m58z25kb","slide":3,"text":"Users can choose simple Lazy Mode or controlled Detailed Mode.","textPreview":"Users can choose simple Lazy Mode or controlled Detailed Mode.","textChars":62,"textLines":1,"bbox":[842,306,326,48]}
+{"kind":"shape","id":"sh/bq1oryts","slide":3,"name":"glass-card","bbox":[90,398,370,126]}
+{"kind":"shape","id":"sh/7mp0bi9s","slide":3,"bbox":[112,420,58,4]}
+{"kind":"textbox","id":"sh/e1w7mp0b","slide":3,"text":"Goal-Oriented Insight","textPreview":"Goal-Oriented Insight","textChars":21,"textLines":1,"bbox":[112,434,326,28]}
+{"kind":"textbox","id":"sh/psfil0rq","slide":3,"text":"Analytics, budgets and allocation goals turn records into awareness.","textPreview":"Analytics, budgets and allocation goals turn records into awareness.","textChars":68,"textLines":1,"bbox":[112,466,326,48]}
+{"kind":"shape","id":"sh/w7mp0bi9","slide":3,"name":"glass-card","bbox":[820,398,370,126]}
+{"kind":"shape","id":"sh/7adsji5s","slide":3,"bbox":[842,420,58,4]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":3,"text":"Reliable Data Flow","textPreview":"Reliable Data Flow","textChars":18,"textLines":1,"bbox":[842,434,326,28]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":3,"text":"Accounts, transactions, recurring plans and reports stay connected.","textPreview":"Accounts, transactions, recurring plans and reports stay connected.","textChars":67,"textLines":1,"bbox":[842,466,326,48]}
+{"kind":"image","id":"im/hwfyxobm","slide":3,"name":"","geometry":"roundRect","alt":"Main dashboard","bbox":[548,168,188,418]}
+{"kind":"notes","id":"nt/0a88zy","slide":3,"text":""}
+{"kind":"slide","id":"sl/6npulz","slide":4,"title":"DEMO MAP","textShapes":22}
+{"kind":"shape","id":"sh/1orytsvu","slide":4,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/u18jqh0f","slide":4,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/jm1cfa9w","slide":4,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/cfa9w3m9","slide":4,"text":"DEMO MAP","textPreview":"DEMO MAP","textChars":8,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/1032lszq","slide":4,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/u9knih4b","slide":4,"text":"Presentation Flow for the Live Demo","textPreview":"Presentation Flow for the Live Demo","textChars":35,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/judg7ads","slide":4,"text":"Each segment shows one user problem, then immediately demonstrates how Smart Pocket solves it.","textPreview":"Each segment shows one user problem, then immediately demonstrates how Smart Pocket solves it.","textChars":94,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/cj6tovah","slide":4,"name":"glass-card","bbox":[70,220,360,100]}
+{"kind":"shape","id":"sh/54zidony","slide":4,"name":"glass-card","bbox":[86,238,44,44]}
+{"kind":"textbox","id":"sh/t47y1kre","slide":4,"text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[86,245,44,24]}
+{"kind":"textbox","id":"sh/0je9cvix","slide":4,"text":"Start & Onboard","textPreview":"Start & Onboard","textChars":15,"textLines":1,"bbox":[146,236,266,28]}
+{"kind":"textbox","id":"sh/byhgn29g","slide":4,"text":"Login, Smart Survey and security setup.","textPreview":"Login, Smart Survey and security setup.","textChars":39,"textLines":1,"bbox":[146,268,266,40]}
+{"kind":"shape","id":"sh/idonyd0z","slide":4,"name":"glass-card","bbox":[460,220,360,100]}
+{"kind":"shape","id":"sh/tcj6tova","slide":4,"name":"glass-card","bbox":[476,238,44,44]}
+{"kind":"textbox","id":"sh/0rqd4vmt","slide":4,"text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[476,245,44,24]}
+{"kind":"textbox","id":"sh/b6xkf6dc","slide":4,"text":"Choose Tracking Depth","textPreview":"Choose Tracking Depth","textChars":21,"textLines":1,"bbox":[536,236,266,28]}
+{"kind":"textbox","id":"sh/il0rqd4v","slide":4,"text":"Lazy Mode vs Detailed Mode.","textPreview":"Lazy Mode vs Detailed Mode.","textChars":27,"textLines":1,"bbox":[536,268,266,40]}
+{"kind":"shape","id":"sh/tovahoza","slide":4,"name":"glass-card","bbox":[850,220,360,100]}
+{"kind":"shape","id":"sh/032lszqt","slide":4,"name":"glass-card","bbox":[866,238,44,44]}
+{"kind":"textbox","id":"sh/czed8v6p","slide":4,"text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[866,245,44,24]}
+{"kind":"textbox","id":"sh/5kb6xkf6","slide":4,"text":"Set Up Accounts","textPreview":"Set Up Accounts","textChars":15,"textLines":1,"bbox":[926,236,266,28]}
+{"kind":"textbox","id":"sh/ytsvu9kn","slide":4,"text":"Assets, account creation and allocation tags.","textPreview":"Assets, account creation and allocation tags.","textChars":45,"textLines":1,"bbox":[926,268,266,40]}
+{"kind":"shape","id":"sh/neloj2t8","slide":4,"name":"glass-card","bbox":[70,370,360,100]}
+{"kind":"shape","id":"sh/cbulwval","slide":4,"name":"glass-card","bbox":[86,388,44,44]}
+{"kind":"textbox","id":"sh/5sneloj2","slide":4,"text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[86,395,44,24]}
+{"kind":"textbox","id":"sh/u54zidon","slide":4,"text":"Record Daily Spending","textPreview":"Record Daily Spending","textChars":21,"textLines":1,"bbox":[146,386,266,28]}
+{"kind":"textbox","id":"sh/nqxs72x4","slide":4,"text":"Shortcut and Lazy transaction entry.","textPreview":"Shortcut and Lazy transaction entry.","textChars":36,"textLines":1,"bbox":[146,418,266,40]}
+{"kind":"shape","id":"sh/gbq1oryt","slide":4,"name":"glass-card","bbox":[460,370,360,100]}
+{"kind":"shape","id":"sh/5wjudg7a","slide":4,"name":"glass-card","bbox":[476,388,44,44]}
+{"kind":"textbox","id":"sh/v6psfil0","slide":4,"text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[476,395,44,24]}
+{"kind":"textbox","id":"sh/2lszqtcj","slide":4,"text":"Automate Repeats","textPreview":"Automate Repeats","textChars":16,"textLines":1,"bbox":[536,386,266,28]}
+{"kind":"textbox","id":"sh/d8bat47y","slide":4,"text":"Recurring transactions and monthly budget.","textPreview":"Recurring transactions and monthly budget.","textChars":42,"textLines":1,"bbox":[536,418,266,40]}
+{"kind":"shape","id":"sh/knih4byh","slide":4,"name":"glass-card","bbox":[850,370,360,100]}
+{"kind":"shape","id":"sh/vu9knih4","slide":4,"name":"glass-card","bbox":[866,388,44,44]}
+{"kind":"textbox","id":"sh/29gr2p8n","slide":4,"text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[866,395,44,24]}
+{"kind":"textbox","id":"sh/d0z61032","slide":4,"text":"Review Impact","textPreview":"Review Impact","textChars":13,"textLines":1,"bbox":[926,386,266,28]}
+{"kind":"textbox","id":"sh/kf6dcbul","slide":4,"text":"Analytics, PDF report and validation results.","textPreview":"Analytics, PDF report and validation results.","textChars":45,"textLines":1,"bbox":[926,418,266,40]}
+{"kind":"notes","id":"nt/6npulz","slide":4,"text":""}
+{"kind":"slide","id":"sl/96tvb8","slide":5,"title":"ONBOARDING","textShapes":11}
+{"kind":"shape","id":"sh/vmtwra5g","slide":5,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/o7qpg3ex","slide":5,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/dsji5sne","slide":5,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/6dcbulwv","slide":5,"text":"ONBOARDING","textPreview":"ONBOARDING","textChars":10,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/vy90je9c","slide":5,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/oj2t83it","slide":5,"text":"Onboarding and Secure Access","textPreview":"Onboarding and Secure Access","textChars":28,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/d4vmtwra","slide":5,"text":"Users can enter quickly, answer a short survey and protect the app with device-level biometric authentication.","textPreview":"Users can enter quickly, answer a short survey and protect the app with device-level biometric authentication.","textChars":110,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/6hcrmhk3","slide":5,"name":"glass-card","bbox":[106,220,152,319]}
+{"kind":"textbox","id":"sh/vy90je9c","slide":5,"text":"Welcome","textPreview":"Welcome","textChars":7,"textLines":1,"bbox":[108,547,148,24]}
+{"kind":"shape","id":"sh/6dcbulwv","slide":5,"name":"glass-card","bbox":[300,220,152,319]}
+{"kind":"textbox","id":"sh/oj2t83it","slide":5,"text":"Smart Survey","textPreview":"Smart Survey","textChars":12,"textLines":1,"bbox":[302,547,148,24]}
+{"kind":"shape","id":"sh/vmtwra5g","slide":5,"name":"glass-card","bbox":[494,220,152,319]}
+{"kind":"textbox","id":"sh/dsji5sne","slide":5,"text":"Biometric unlock","textPreview":"Biometric unlock","textChars":16,"textLines":1,"bbox":[496,547,148,24]}
+{"kind":"shape","id":"sh/o7qpg3ex","slide":5,"name":"glass-card","bbox":[760,238,410,126]}
+{"kind":"shape","id":"sh/vahoza1g","slide":5,"bbox":[782,260,58,4]}
+{"kind":"textbox","id":"sh/6tovahoz","slide":5,"text":"Demo Cue","textPreview":"Demo Cue","textChars":8,"textLines":1,"bbox":[782,274,366,28]}
+{"kind":"textbox","id":"sh/epkzupwb","slide":5,"text":"Show login/register, then explain that Smart Survey supports onboarding and user habit understanding.","textPreview":"Show login/register, then explain that Smart Survey supports onboarding and user habit understanding.","textChars":101,"textLines":1,"bbox":[782,306,366,48]}
+{"kind":"shape","id":"sh/7adsji5s","slide":5,"name":"glass-card","bbox":[760,408,410,126]}
+{"kind":"shape","id":"sh/wval87ed","slide":5,"bbox":[782,430,58,4]}
+{"kind":"textbox","id":"sh/pg3ex0nu","slide":5,"text":"Safe Claim","textPreview":"Safe Claim","textChars":10,"textLines":1,"bbox":[782,444,366,28]}
+{"kind":"textbox","id":"sh/e1w7mp0b","slide":5,"text":"Biometric access uses the Android device's supported biometric prompt, not custom face or fingerprint recognition.","textPreview":"Biometric access uses the Android device's supported biometric prompt, not custom face or fingerprint recognition.","textChars":114,"textLines":1,"bbox":[782,476,366,48]}
+{"kind":"image","id":"im/epkzupwb","slide":5,"name":"","geometry":"roundRect","alt":"Welcome","bbox":[114,228,136,303]}
+{"kind":"image","id":"im/qd4vmtwr","slide":5,"name":"","geometry":"roundRect","alt":"Smart Survey","bbox":[308,228,136,303]}
+{"kind":"image","id":"im/xczed8v6","slide":5,"name":"","geometry":"roundRect","alt":"Biometric unlock","bbox":[502,228,136,303]}
+{"kind":"notes","id":"nt/96tvb8","slide":5,"text":""}
+{"kind":"slide","id":"sl/3nlhvw","slide":6,"title":"CORE INNOVATION","textShapes":11}
+{"kind":"shape","id":"sh/onyd0z61","slide":6,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/z25kb6xk","slide":6,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/6hcrmhk3","slide":6,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/dg7adsji","slide":6,"text":"CORE INNOVATION","textPreview":"CORE INNOVATION","textChars":15,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/ovahoza1","slide":6,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/vahoza1g","slide":6,"text":"Dual-Mode Architecture","textPreview":"Dual-Mode Architecture","textChars":22,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/6tovahoz","slide":6,"text":"Smart Pocket adapts to different tracking habits instead of forcing every user into the same workflow.","textPreview":"Smart Pocket adapts to different tracking habits instead of forcing every user into the same workflow.","textChars":102,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/dsji5sne","slide":6,"name":"glass-card","bbox":[540,164,190,403]}
+{"kind":"textbox","id":"sh/q5o7qpg3","slide":6,"text":"Operating Mode","textPreview":"Operating Mode","textChars":14,"textLines":1,"bbox":[542,575,186,24]}
+{"kind":"shape","id":"sh/jqh0fepk","slide":6,"name":"glass-card","bbox":[92,230,360,250]}
+{"kind":"textbox","id":"sh/8bat47y1","slide":6,"text":"Lazy Mode","textPreview":"Lazy Mode","textChars":9,"textLines":1,"bbox":[126,268,290,42]}
+{"kind":"textbox","id":"sh/1w7mp0bi","slide":6,"text":"Design: Simple\nSpeed: Fast setup\nAdvantage: Lower friction","textPreview":"Design: Simple | Speed: Fast setup | Advantage: Lower friction","textChars":58,"textLines":3,"bbox":[128,330,286,94]}
+{"kind":"textbox","id":"sh/qh0fepkz","slide":6,"text":"For users who want quick daily capture and a simple overview.","textPreview":"For users who want quick daily capture and a simple overview.","textChars":61,"textLines":1,"bbox":[128,438,280,34]}
+{"kind":"shape","id":"sh/j2t83itg","slide":6,"name":"glass-card","bbox":[824,230,360,250]}
+{"kind":"textbox","id":"sh/8nqxs72x","slide":6,"text":"Detailed Mode","textPreview":"Detailed Mode","textChars":13,"textLines":1,"bbox":[858,268,300,42]}
+{"kind":"textbox","id":"sh/18jqh0fe","slide":6,"text":"Design: Advanced\nSpeed: Full control\nAdvantage: Higher accuracy","textPreview":"Design: Advanced | Speed: Full control | Advantage: Higher accuracy","textChars":63,"textLines":3,"bbox":[860,330,286,94]}
+{"kind":"textbox","id":"sh/ulwval87","slide":6,"text":"For users who want account-level control and detailed records.","textPreview":"For users who want account-level control and detailed records.","textChars":62,"textLines":1,"bbox":[860,438,280,34]}
+{"kind":"image","id":"im/p4r65wju","slide":6,"name":"","geometry":"roundRect","alt":"Operating Mode","bbox":[548,172,174,387]}
+{"kind":"notes","id":"nt/3nlhvw","slide":6,"text":""}
+{"kind":"slide","id":"sl/u5i57i","slide":7,"title":"KEY DIFFERENTIATOR","textShapes":14}
+{"kind":"shape","id":"sh/upwb2hwf","slide":7,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/5gbq1ory","slide":7,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/cvixczed","slide":7,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/nyd0z610","slide":7,"text":"KEY DIFFERENTIATOR","textPreview":"KEY DIFFERENTIATOR","textChars":18,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/udg7adsj","slide":7,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/54zidony","slide":7,"text":"Two Different Paths into Lazy Mode","textPreview":"Two Different Paths into Lazy Mode","textChars":34,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/cj6tovah","slide":7,"text":"This is the most important logic to explain during the demo: Lazy Mode is simple, but it is not always entered the same way.","textPreview":"This is the most important logic to explain during the demo: Lazy Mode is simple, but it is not always entered the same way.","textChars":124,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/judg7ads","slide":7,"name":"glass-card","bbox":[86,242,154,323]}
+{"kind":"textbox","id":"sh/47y1kre1","slide":7,"text":"Add account","textPreview":"Add account","textChars":11,"textLines":1,"bbox":[88,573,150,24]}
+{"kind":"shape","id":"sh/tsvu9kni","slide":7,"name":"glass-card","bbox":[550,242,154,323]}
+{"kind":"textbox","id":"sh/bm58z25k","slide":7,"text":"Lazy assets","textPreview":"Lazy assets","textChars":11,"textLines":1,"bbox":[552,573,150,24]}
+{"kind":"shape","id":"sh/4vmtwra5","slide":7,"name":"glass-card","bbox":[1008,242,154,323]}
+{"kind":"textbox","id":"sh/mp0bi9s3","slide":7,"text":"Detailed accounts","textPreview":"Detailed accounts","textChars":17,"textLines":1,"bbox":[1010,573,150,24]}
+{"kind":"shape","id":"sh/bat47y1k","slide":7,"name":"glass-card","bbox":[248,258,266,222]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":7,"text":"First-Time Lazy User","textPreview":"First-Time Lazy User","textChars":20,"textLines":1,"bbox":[274,286,220,30]}
+{"kind":"textbox","id":"sh/t83itgfm","slide":7,"text":"Starts with functional pools such as Daily Use, Savings and Investment. The setup is intentionally light to reduce first-use friction.","textPreview":"Starts with functional pools such as Daily Use, Savings and Investment. The setup is intentionally light to reduce first-use friction.","textChars":134,"textLines":1,"bbox":[274,332,212,94]}
+{"kind":"shape","id":"sh/xs72x4na","slide":7,"name":"glass-card","bbox":[274,432,146,34]}
+{"kind":"textbox","id":"sh/87ed8bat","slide":7,"text":"simple setup","textPreview":"simple setup","textChars":12,"textLines":1,"bbox":[288,439,118,20]}
+{"kind":"shape","id":"sh/fmlkjm1c","slide":7,"name":"glass-card","bbox":[714,258,266,222]}
+{"kind":"textbox","id":"sh/q1orytsv","slide":7,"text":"Detailed to Lazy","textPreview":"Detailed to Lazy","textChars":16,"textLines":1,"bbox":[740,286,220,30]}
+{"kind":"textbox","id":"sh/1gvy90je","slide":7,"text":"Existing detailed accounts are grouped by allocation tag. Data is preserved; only the viewing depth becomes simpler.","textPreview":"Existing detailed accounts are grouped by allocation tag. Data is preserved; only the viewing depth becomes simpler.","textChars":116,"textLines":1,"bbox":[740,332,212,94]}
+{"kind":"shape","id":"sh/8z25kb6x","slide":7,"name":"glass-card","bbox":[740,432,160,34]}
+{"kind":"textbox","id":"sh/je9cvixc","slide":7,"text":"tag aggregation","textPreview":"tag aggregation","textChars":15,"textLines":1,"bbox":[754,439,132,20]}
+{"kind":"textbox","id":"sh/qtcj6tov","slide":7,"text":"Demo line: Lazy Mode can either reduce setup for beginners or reduce fatigue for detailed users.","textPreview":"Demo line: Lazy Mode can either reduce setup for beginners or reduce fatigue for detailed users.","textChars":96,"textLines":1,"bbox":[168,598,944,38]}
+{"kind":"image","id":"im/3q5o7qpg","slide":7,"name":"","geometry":"roundRect","alt":"Add account","bbox":[94,250,138,307]}
+{"kind":"image","id":"im/5kb6xkf6","slide":7,"name":"","geometry":"roundRect","alt":"Lazy assets","bbox":[558,250,138,307]}
+{"kind":"image","id":"im/u54zidon","slide":7,"name":"","geometry":"roundRect","alt":"Detailed accounts","bbox":[1016,250,138,307]}
+{"kind":"notes","id":"nt/u5i57i","slide":7,"text":""}
+{"kind":"slide","id":"sl/5yb2f6","slide":8,"title":"ACCOUNTS & ASSETS","textShapes":11}
+{"kind":"shape","id":"sh/0rqd4vmt","slide":8,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/b6xkf6dc","slide":8,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/il0rqd4v","slide":8,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/t47y1kre","slide":8,"text":"ACCOUNTS & ASSETS","textPreview":"ACCOUNTS & ASSETS","textChars":17,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/0je9cvix","slide":8,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/byhgn29g","slide":8,"text":"Goal-Oriented Account Setup","textPreview":"Goal-Oriented Account Setup","textChars":27,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/idonyd0z","slide":8,"text":"Accounts support allocation goals and meaningful views of daily use, savings and investment.","textPreview":"Accounts support allocation goals and meaningful views of daily use, savings and investment.","textChars":92,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/p0bi9s36","slide":8,"name":"glass-card","bbox":[88,218,164,345]}
+{"kind":"textbox","id":"sh/itgfmlkj","slide":8,"text":"Accounts","textPreview":"Accounts","textChars":8,"textLines":1,"bbox":[90,571,160,24]}
+{"kind":"shape","id":"sh/7ed8bat4","slide":8,"name":"glass-card","bbox":[310,218,164,345]}
+{"kind":"textbox","id":"sh/pkzupwb2","slide":8,"text":"Allocation goals","textPreview":"Allocation goals","textChars":16,"textLines":1,"bbox":[312,571,160,24]}
+{"kind":"shape","id":"sh/ih4byhgn","slide":8,"name":"glass-card","bbox":[532,218,164,345]}
+{"kind":"textbox","id":"sh/0nuxc3yl","slide":8,"text":"Assets","textPreview":"Assets","textChars":6,"textLines":1,"bbox":[534,571,160,24]}
+{"kind":"shape","id":"sh/p8nqxs72","slide":8,"name":"glass-card","bbox":[810,250,370,126]}
+{"kind":"shape","id":"sh/ed8v6psf","slide":8,"bbox":[832,272,58,4]}
+{"kind":"textbox","id":"sh/7y1kre1w","slide":8,"text":"What to Demo","textPreview":"What to Demo","textChars":12,"textLines":1,"bbox":[832,286,326,28]}
+{"kind":"textbox","id":"sh/j6tovaho","slide":8,"text":"Open Accounts, add or edit an account, then show allocation goals and suggested tags.","textPreview":"Open Accounts, add or edit an account, then show allocation goals and suggested tags.","textChars":85,"textLines":1,"bbox":[832,318,326,48]}
+{"kind":"shape","id":"sh/ulwval87","slide":8,"name":"glass-card","bbox":[810,420,370,126]}
+{"kind":"shape","id":"sh/1cfa9w3m","slide":8,"bbox":[832,442,58,4]}
+{"kind":"textbox","id":"sh/crmhk3q5","slide":8,"text":"Why It Matters","textPreview":"Why It Matters","textChars":14,"textLines":1,"bbox":[832,456,326,28]}
+{"kind":"textbox","id":"sh/ji5snelo","slide":8,"text":"This turns fragmented accounts into purpose-based financial guidance.","textPreview":"This turns fragmented accounts into purpose-based financial guidance.","textChars":69,"textLines":1,"bbox":[832,488,326,48]}
+{"kind":"image","id":"im/5wjudg7a","slide":8,"name":"","geometry":"roundRect","alt":"Accounts","bbox":[96,226,148,329]}
+{"kind":"image","id":"im/nyd0z610","slide":8,"name":"","geometry":"roundRect","alt":"Allocation goals","bbox":[318,226,148,329]}
+{"kind":"image","id":"im/cvixczed","slide":8,"name":"","geometry":"roundRect","alt":"Assets","bbox":[540,226,148,329]}
+{"kind":"notes","id":"nt/5yb2f6","slide":8,"text":""}
+{"kind":"slide","id":"sl/jo6mto","slide":9,"title":"DAILY CAPTURE","textShapes":11}
+{"kind":"shape","id":"sh/vy90je9c","slide":9,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/oj2t83it","slide":9,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/d4vmtwra","slide":9,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/61032lsz","slide":9,"text":"DAILY CAPTURE","textPreview":"DAILY CAPTURE","textChars":13,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/vmtwra5g","slide":9,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/o7qpg3ex","slide":9,"text":"Faster Daily Recording","textPreview":"Faster Daily Recording","textChars":22,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/dsji5sne","slide":9,"text":"Smart Pocket reduces capture friction through simplified entry, category selection and reusable one-tap shortcuts.","textPreview":"Smart Pocket reduces capture friction through simplified entry, category selection and reusable one-tap shortcuts.","textChars":114,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/6tovahoz","slide":9,"name":"glass-card","bbox":[102,218,164,345]}
+{"kind":"textbox","id":"sh/7qpg3ex0","slide":9,"text":"Expense entry","textPreview":"Expense entry","textChars":13,"textLines":1,"bbox":[104,571,160,24]}
+{"kind":"shape","id":"sh/i5sneloj","slide":9,"name":"glass-card","bbox":[358,218,164,345]}
+{"kind":"textbox","id":"sh/0bi9s36h","slide":9,"text":"Lazy entry","textPreview":"Lazy entry","textChars":10,"textLines":1,"bbox":[360,571,160,24]}
+{"kind":"shape","id":"sh/7y1kre1w","slide":9,"name":"glass-card","bbox":[614,218,164,345]}
+{"kind":"textbox","id":"sh/p4r65wju","slide":9,"text":"Shortcuts","textPreview":"Shortcuts","textChars":9,"textLines":1,"bbox":[616,571,160,24]}
+{"kind":"shape","id":"sh/wjudg7ad","slide":9,"name":"glass-card","bbox":[854,250,330,126]}
+{"kind":"shape","id":"sh/72x4nap4","slide":9,"bbox":[876,272,58,4]}
+{"kind":"textbox","id":"sh/ih4byhgn","slide":9,"text":"Shortcut Logic","textPreview":"Shortcut Logic","textChars":14,"textLines":1,"bbox":[876,286,286,28]}
+{"kind":"textbox","id":"sh/mtwra5gb","slide":9,"text":"Frequently repeated expenses can be saved once and recorded again with fewer steps.","textPreview":"Frequently repeated expenses can be saved once and recorded again with fewer steps.","textChars":83,"textLines":1,"bbox":[876,318,286,48]}
+{"kind":"shape","id":"sh/fepkzupw","slide":9,"name":"glass-card","bbox":[854,420,330,126]}
+{"kind":"shape","id":"sh/4zidonyd","slide":9,"bbox":[876,442,58,4]}
+{"kind":"textbox","id":"sh/xkf6dcbu","slide":9,"text":"Lazy Logic","textPreview":"Lazy Logic","textChars":10,"textLines":1,"bbox":[876,456,286,28]}
+{"kind":"textbox","id":"sh/mlkjm1cf","slide":9,"text":"The transaction form focuses on essential fields so users can record before they forget.","textPreview":"The transaction form focuses on essential fields so users can record before they forget.","textChars":88,"textLines":1,"bbox":[876,488,286,48]}
+{"kind":"image","id":"im/adsji5sn","slide":9,"name":"","geometry":"roundRect","alt":"Expense entry","bbox":[110,226,148,329]}
+{"kind":"image","id":"im/e1w7mp0b","slide":9,"name":"","geometry":"roundRect","alt":"Lazy entry","bbox":[366,226,148,329]}
+{"kind":"image","id":"im/pg3ex0nu","slide":9,"name":"","geometry":"roundRect","alt":"Shortcuts","bbox":[622,226,148,329]}
+{"kind":"notes","id":"nt/jo6mto","slide":9,"text":""}
+{"kind":"slide","id":"sl/qfpzi9","slide":10,"title":"AUTOMATION","textShapes":11}
+{"kind":"shape","id":"sh/z25kb6xk","slide":10,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/onyd0z61","slide":10,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/d8v6psfi","slide":10,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/6tovahoz","slide":10,"text":"AUTOMATION","textPreview":"AUTOMATION","textChars":10,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/vahoza1g","slide":10,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/ovahoza1","slide":10,"text":"Automation for Sustainable Habits","textPreview":"Automation for Sustainable Habits","textChars":33,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/dg7adsji","slide":10,"text":"Recurring plans and budget controls reduce repetitive work while keeping financial records complete.","textPreview":"Recurring plans and budget controls reduce repetitive work while keeping financial records complete.","textChars":100,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/61032lsz","slide":10,"name":"glass-card","bbox":[110,218,166,350]}
+{"kind":"textbox","id":"sh/b2hwfyxo","slide":10,"text":"Recurring list","textPreview":"Recurring list","textChars":14,"textLines":1,"bbox":[112,576,162,24]}
+{"kind":"shape","id":"sh/mhk3q5o7","slide":10,"name":"glass-card","bbox":[360,218,166,350]}
+{"kind":"textbox","id":"sh/4nap4r65","slide":10,"text":"Add recurring","textPreview":"Add recurring","textChars":13,"textLines":1,"bbox":[362,576,162,24]}
+{"kind":"shape","id":"sh/bq1oryts","slide":10,"name":"glass-card","bbox":[610,218,166,350]}
+{"kind":"textbox","id":"sh/twra5gbq","slide":10,"text":"Monthly budget","textPreview":"Monthly budget","textChars":14,"textLines":1,"bbox":[612,576,162,24]}
+{"kind":"shape","id":"sh/4byhgn29","slide":10,"name":"glass-card","bbox":[860,250,330,126]}
+{"kind":"shape","id":"sh/bm58z25k","slide":10,"bbox":[882,272,58,4]}
+{"kind":"textbox","id":"sh/m1cfa9w3","slide":10,"text":"Recurring Transactions","textPreview":"Recurring Transactions","textChars":22,"textLines":1,"bbox":[882,286,286,28]}
+{"kind":"textbox","id":"sh/q5o7qpg3","slide":10,"text":"Useful for salary, subscriptions and fixed bills that repeat every month.","textPreview":"Useful for salary, subscriptions and fixed bills that repeat every month.","textChars":73,"textLines":1,"bbox":[882,318,286,48]}
+{"kind":"shape","id":"sh/jqh0fepk","slide":10,"name":"glass-card","bbox":[860,420,330,126]}
+{"kind":"shape","id":"sh/8bat47y1","slide":10,"bbox":[882,442,58,4]}
+{"kind":"textbox","id":"sh/1w7mp0bi","slide":10,"text":"Budget Management","textPreview":"Budget Management","textChars":17,"textLines":1,"bbox":[882,456,286,28]}
+{"kind":"textbox","id":"sh/qh0fepkz","slide":10,"text":"Monthly budget feedback helps users connect spending records with control.","textPreview":"Monthly budget feedback helps users connect spending records with control.","textChars":74,"textLines":1,"bbox":[882,488,286,48]}
+{"kind":"image","id":"im/29gr2p8n","slide":10,"name":"","geometry":"roundRect","alt":"Recurring list","bbox":[118,226,150,334]}
+{"kind":"image","id":"im/6psfil0r","slide":10,"name":"","geometry":"roundRect","alt":"Add recurring","bbox":[368,226,150,334]}
+{"kind":"image","id":"im/donyd0z6","slide":10,"name":"","geometry":"roundRect","alt":"Monthly budget","bbox":[618,226,150,334]}
+{"kind":"notes","id":"nt/qfpzi9","slide":10,"text":""}
+{"kind":"slide","id":"sl/98bdbl","slide":11,"title":"ANALYTICS & REPORTS","textShapes":12}
+{"kind":"shape","id":"sh/1kre1w7m","slide":11,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/uxc3ylc7","slide":11,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/ji5snelo","slide":11,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/crmhk3q5","slide":11,"text":"ANALYTICS & REPORTS","textPreview":"ANALYTICS & REPORTS","textChars":19,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/1cfa9w3m","slide":11,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/ulwval87","slide":11,"text":"From Records to Awareness","textPreview":"From Records to Awareness","textChars":25,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/j6tovaho","slide":11,"text":"Smart Pocket converts entries into budget, category, cash flow and PDF summaries.","textPreview":"Smart Pocket converts entries into budget, category, cash flow and PDF summaries.","textChars":81,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/8nqxs72x","slide":11,"name":"glass-card","bbox":[82,218,154,323]}
+{"kind":"textbox","id":"sh/psfil0rq","slide":11,"text":"Budget & category","textPreview":"Budget & category","textChars":17,"textLines":1,"bbox":[84,549,150,24]}
+{"kind":"shape","id":"sh/w7mp0bi9","slide":11,"name":"glass-card","bbox":[290,218,154,323]}
+{"kind":"textbox","id":"sh/e1w7mp0b","slide":11,"text":"Cash flow","textPreview":"Cash flow","textChars":9,"textLines":1,"bbox":[292,549,150,24]}
+{"kind":"shape","id":"sh/pg3ex0nu","slide":11,"name":"glass-card","bbox":[498,218,154,323]}
+{"kind":"textbox","id":"sh/7adsji5s","slide":11,"text":"Investment","textPreview":"Investment","textChars":10,"textLines":1,"bbox":[500,549,150,24]}
+{"kind":"shape","id":"sh/epkzupwb","slide":11,"name":"glass-card","bbox":[706,218,154,323]}
+{"kind":"textbox","id":"sh/wra5gbq1","slide":11,"text":"PDF report","textPreview":"PDF report","textChars":10,"textLines":1,"bbox":[708,549,150,24]}
+{"kind":"shape","id":"sh/s36hcrmh","slide":11,"name":"glass-card","bbox":[940,270,260,126]}
+{"kind":"shape","id":"sh/hoza1gvy","slide":11,"bbox":[962,292,58,4]}
+{"kind":"textbox","id":"sh/a1gvy90j","slide":11,"text":"Demo Cue","textPreview":"Demo Cue","textChars":8,"textLines":1,"bbox":[962,306,216,28]}
+{"kind":"textbox","id":"sh/zidonyd0","slide":11,"text":"Open Stats, show analytics cards, then export or preview the PDF report.","textPreview":"Open Stats, show analytics cards, then export or preview the PDF report.","textChars":72,"textLines":1,"bbox":[962,338,216,48]}
+{"kind":"shape","id":"sh/svu9knih","slide":11,"name":"glass-card","bbox":[940,440,260,126]}
+{"kind":"shape","id":"sh/hgn29gr2","slide":11,"bbox":[962,462,58,4]}
+{"kind":"textbox","id":"sh/ap4r65wj","slide":11,"text":"User Value","textPreview":"User Value","textChars":10,"textLines":1,"bbox":[962,476,216,28]}
+{"kind":"textbox","id":"sh/za1gvy90","slide":11,"text":"Reports make spending patterns easier to review and explain.","textPreview":"Reports make spending patterns easier to review and explain.","textChars":60,"textLines":1,"bbox":[962,508,216,48]}
+{"kind":"image","id":"im/wval87ed","slide":11,"name":"","geometry":"roundRect","alt":"Budget & category","bbox":[90,226,138,307]}
+{"kind":"image","id":"im/onyd0z61","slide":11,"name":"","geometry":"roundRect","alt":"Cash flow","bbox":[298,226,138,307]}
+{"kind":"image","id":"im/vahoza1g","slide":11,"name":"","geometry":"roundRect","alt":"Investment","bbox":[506,226,138,307]}
+{"kind":"image","id":"im/61032lsz","slide":11,"name":"","geometry":"roundRect","alt":"PDF report","bbox":[714,226,138,307]}
+{"kind":"notes","id":"nt/98bdbl","slide":11,"text":""}
+{"kind":"slide","id":"sl/l96ag0","slide":12,"title":"VALIDATION","textShapes":12}
+{"kind":"shape","id":"sh/donyd0z6","slide":12,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/2x4nap4r","slide":12,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/vixczed8","slide":12,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/kre1w7mp","slide":12,"text":"VALIDATION","textPreview":"VALIDATION","textChars":10,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/dcbulwva","slide":12,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/6psfil0r","slide":12,"text":"Validation and Impact","textPreview":"Validation and Impact","textChars":21,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/val87ed8","slide":12,"text":"Testing results show that the app is functional, usable and positively received by target users.","textPreview":"Testing results show that the app is functional, usable and positively received by target users.","textChars":96,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/knih4byh","slide":12,"name":"glass-card","bbox":[90,238,500,136]}
+{"kind":"textbox","id":"sh/d8bat47y","slide":12,"text":"100%","textPreview":"100%","textChars":4,"textLines":1,"bbox":[114,258,452,56]}
+{"kind":"textbox","id":"sh/pkzupwb2","slide":12,"text":"Functional pass rate across 56 test cases","textPreview":"Functional pass rate across 56 test cases","textChars":41,"textLines":1,"bbox":[116,320,448,36]}
+{"kind":"shape","id":"sh/0z61032l","slide":12,"name":"glass-card","bbox":[690,238,500,136]}
+{"kind":"textbox","id":"sh/7ed8bat4","slide":12,"text":"90.6%","textPreview":"90.6%","textChars":5,"textLines":1,"bbox":[714,258,452,56]}
+{"kind":"textbox","id":"sh/itgfmlkj","slide":12,"text":"Overall user satisfaction positive feedback","textPreview":"Overall user satisfaction positive feedback","textChars":43,"textLines":1,"bbox":[716,320,448,36]}
+{"kind":"shape","id":"sh/p8nqxs72","slide":12,"name":"glass-card","bbox":[90,430,500,136]}
+{"kind":"textbox","id":"sh/0nuxc3yl","slide":12,"text":"93.8%","textPreview":"93.8%","textChars":5,"textLines":1,"bbox":[114,450,452,56]}
+{"kind":"textbox","id":"sh/72x4nap4","slide":12,"text":"Recommendation positive feedback","textPreview":"Recommendation positive feedback","textChars":32,"textLines":1,"bbox":[116,512,448,36]}
+{"kind":"shape","id":"sh/ih4byhgn","slide":12,"name":"glass-card","bbox":[690,430,500,136]}
+{"kind":"textbox","id":"sh/p4r65wju","slide":12,"text":"81.2%","textPreview":"81.2%","textChars":5,"textLines":1,"bbox":[714,450,452,56]}
+{"kind":"textbox","id":"sh/wjudg7ad","slide":12,"text":"One-Tap Shortcuts save time positive feedback","textPreview":"One-Tap Shortcuts save time positive feedback","textChars":45,"textLines":1,"bbox":[716,512,448,36]}
+{"kind":"notes","id":"nt/l96ag0","slide":12,"text":""}
+{"kind":"slide","id":"sl/froj4b","slide":13,"title":"CONCLUSION","textShapes":14}
+{"kind":"shape","id":"sh/rqd4vmtw","slide":13,"name":"left-atmosphere","bbox":[0,0,1280,720]}
+{"kind":"shape","id":"sh/kb6xkf6d","slide":13,"name":"cyan-wash","bbox":[-180,440,620,280]}
+{"kind":"shape","id":"sh/9w3m94fu","slide":13,"name":"violet-wash","bbox":[850,-100,580,300]}
+{"kind":"textbox","id":"sh/2t83itgf","slide":13,"text":"CONCLUSION","textPreview":"CONCLUSION","textChars":10,"textLines":1,"bbox":[54,34,360,28]}
+{"kind":"textbox","id":"sh/re1w7mp0","slide":13,"text":"FYP PRODUCT DEMO","textPreview":"FYP PRODUCT DEMO","textChars":16,"textLines":1,"bbox":[1078,34,150,28]}
+{"kind":"textbox","id":"sh/kzupwb2h","slide":13,"text":"The Future of Personal Finance","textPreview":"The Future of Personal Finance","textChars":30,"textLines":1,"bbox":[54,86,760,96]}
+{"kind":"textbox","id":"sh/9knih4by","slide":13,"text":"Smart Pocket's value is not only more features. It is an adaptive tracking experience that different users can actually continue using.","textPreview":"Smart Pocket's value is not only more features. It is an adaptive tracking experience that different users can actually continue using.","textChars":135,"textLines":1,"bbox":[58,184,780,58]}
+{"kind":"shape","id":"sh/2p8nqxs7","slide":13,"name":"glass-card","bbox":[837,140,194,412]}
+{"kind":"textbox","id":"sh/3m94fu18","slide":13,"text":"Dark mode dashboard","textPreview":"Dark mode dashboard","textChars":19,"textLines":1,"bbox":[839,560,190,24]}
+{"kind":"shape","id":"sh/a5gbq1or","slide":13,"name":"glass-card","bbox":[90,230,330,126]}
+{"kind":"shape","id":"sh/lszqtcj6","slide":13,"bbox":[112,252,58,4]}
+{"kind":"textbox","id":"sh/s72x4nap","slide":13,"text":"Problem Solved","textPreview":"Problem Solved","textChars":14,"textLines":1,"bbox":[112,266,286,28]}
+{"kind":"textbox","id":"sh/3ylc7u54","slide":13,"text":"Reduced recording friction through shortcuts, recurring plans and Lazy Mode.","textPreview":"Reduced recording friction through shortcuts, recurring plans and Lazy Mode.","textChars":76,"textLines":1,"bbox":[112,298,286,48]}
+{"kind":"shape","id":"sh/adsji5sn","slide":13,"name":"glass-card","bbox":[470,230,330,126]}
+{"kind":"shape","id":"sh/h4byhgn2","slide":13,"bbox":[492,252,58,4]}
+{"kind":"textbox","id":"sh/sji5snel","slide":13,"text":"Key Innovation","textPreview":"Key Innovation","textChars":14,"textLines":1,"bbox":[492,266,286,28]}
+{"kind":"textbox","id":"sh/za1gvy90","slide":13,"text":"Multi-mode architecture bridges fast entry and detailed account control.","textPreview":"Multi-mode architecture bridges fast entry and detailed account control.","textChars":72,"textLines":1,"bbox":[492,298,286,48]}
+{"kind":"shape","id":"sh/ap4r65wj","slide":13,"name":"glass-card","bbox":[90,410,330,126]}
+{"kind":"shape","id":"sh/yd0z6103","slide":13,"bbox":[112,432,58,4]}
+{"kind":"textbox","id":"sh/rytsvu9k","slide":13,"text":"User Impact","textPreview":"User Impact","textChars":11,"textLines":1,"bbox":[112,446,286,28]}
+{"kind":"textbox","id":"sh/gfmlkjm1","slide":13,"text":"Analytics, reports and allocation views improve financial awareness.","textPreview":"Analytics, reports and allocation views improve financial awareness.","textChars":68,"textLines":1,"bbox":[112,478,286,48]}
+{"kind":"shape","id":"sh/90je9cvi","slide":13,"name":"glass-card","bbox":[470,410,330,126]}
+{"kind":"shape","id":"sh/y1kre1w7","slide":13,"bbox":[492,432,58,4]}
+{"kind":"textbox","id":"sh/rmhk3q5o","slide":13,"text":"Future Potential","textPreview":"Future Potential","textChars":16,"textLines":1,"bbox":[492,446,286,28]}
+{"kind":"textbox","id":"sh/g7adsji5","slide":13,"text":"Scalable foundation for OCR receipt capture, bank integration and predictive analytics.","textPreview":"Scalable foundation for OCR receipt capture, bank integration and predictive analytics.","textChars":87,"textLines":1,"bbox":[492,478,286,48]}
+{"kind":"textbox","id":"sh/9s36hcrm","slide":13,"text":"Closing line: Smart Pocket adapts to the user, so the user does not have to abandon tracking.","textPreview":"Closing line: Smart Pocket adapts to the user, so the user does not have to abandon tracking.","textChars":93,"textLines":1,"bbox":[104,612,760,36]}
+{"kind":"image","id":"im/epkzupwb","slide":13,"name":"","geometry":"roundRect","alt":"Dark mode dashboard","bbox":[845,148,178,396]}
+{"kind":"notes","id":"nt/froj4b","slide":13,"text":""}

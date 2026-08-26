@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart' as g;
 import 'package:local_auth/error_codes.dart' as auth_error;
@@ -30,20 +31,62 @@ class AuthService {
   }
 
   Future<UserCredential> signInWithGoogle() async {
-    final g.GoogleSignInAccount? account = await _googleSignIn.signIn();
-    if (account == null) {
-      throw FirebaseAuthException(
-        code: 'google-cancelled',
-        message: 'Cancelled',
-      );
-    }
+    try {
+      final g.GoogleSignInAccount? account = await _googleSignIn.signIn();
+      if (account == null) {
+        throw FirebaseAuthException(
+          code: 'google-cancelled',
+          message: 'Cancelled',
+        );
+      }
 
-    final g.GoogleSignInAuthentication auth = await account.authentication;
-    final credential = GoogleAuthProvider.credential(
-      idToken: auth.idToken,
-      accessToken: auth.accessToken,
+      final g.GoogleSignInAuthentication auth = await account.authentication;
+      final credential = GoogleAuthProvider.credential(
+        idToken: auth.idToken,
+        accessToken: auth.accessToken,
+      );
+      return _auth.signInWithCredential(credential);
+    } on FirebaseAuthException catch (e, stackTrace) {
+      _logGoogleSignInFailure(
+        source: 'FirebaseAuth',
+        code: e.code,
+        message: e.message,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    } on PlatformException catch (e, stackTrace) {
+      _logGoogleSignInFailure(
+        source: 'GoogleSignIn',
+        code: e.code,
+        message: e.message,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    } catch (e, stackTrace) {
+      _logGoogleSignInFailure(
+        source: 'Unexpected',
+        code: e.runtimeType.toString(),
+        message: e.toString(),
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+  }
+
+  void _logGoogleSignInFailure({
+    required String source,
+    required String code,
+    required String? message,
+    required StackTrace stackTrace,
+  }) {
+    if (!kDebugMode) return;
+    debugPrint(
+      'Google sign-in failure [$source/$code]: ${message ?? 'No message'}',
     );
-    return _auth.signInWithCredential(credential);
+    debugPrintStack(
+      label: 'Google sign-in stack trace',
+      stackTrace: stackTrace,
+    );
   }
 
   Future<void> sendPasswordReset(String email) {
