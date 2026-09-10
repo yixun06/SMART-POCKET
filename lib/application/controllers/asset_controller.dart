@@ -99,18 +99,6 @@ class AssetController extends ChangeNotifier {
     return _accountService.deleteAccount(accountId);
   }
 
-  Future<void> updateInvestmentBalance({
-    required String accountId,
-    required double newBalance,
-    String? note,
-  }) {
-    return _accountService.updateInvestmentBalance(
-      accountId: accountId,
-      newBalance: newBalance,
-      note: note,
-    );
-  }
-
   Future<void> addAdjustmentTransaction({
     required String accountId,
     required double targetBalance,
@@ -146,23 +134,15 @@ class AssetController extends ChangeNotifier {
     );
   }
 
-  Future<void> recordInvestmentPnlLog({
+  Future<double> updateInvestmentValue({
     required String accountId,
-    required String accountName,
-    required double oldBalance,
     required double newBalance,
-    required double diff,
-    required String pnlType,
     String? note,
   }) {
-    return _accountService.recordInvestmentPnlLog(
+    return _accountService.updateInvestmentValue(
       uid: _requireUid(),
       accountId: accountId,
-      accountName: accountName,
-      oldBalance: oldBalance,
       newBalance: newBalance,
-      diff: diff,
-      pnlType: pnlType,
       note: note,
     );
   }

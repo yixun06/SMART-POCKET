@@ -1773,17 +1773,10 @@ class _AccountPageState extends State<AccountPage> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: originalCtrl,
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
+                  readOnly: true,
                   decoration: const InputDecoration(
                     labelText: 'Original Value (RM)',
                   ),
-                  validator: (v) {
-                    final n = double.tryParse((v ?? '').trim());
-                    if (n == null || n < 0) return 'Invalid amount';
-                    return null;
-                  },
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
@@ -1934,41 +1927,25 @@ class _AccountPageState extends State<AccountPage> {
 
     if (ok != true) return;
 
-    final originalValue = double.parse(originalCtrl.text.trim());
     final currentValue = double.parse(currentCtrl.text.trim());
-    final diff = currentValue - originalValue;
-    final pnlType = diff >= 0 ? 'profit' : 'loss';
 
     final asset = context.read<AssetController>();
 
     try {
-      await asset.addAdjustmentTransaction(
+      final signedDiff = await asset.updateInvestmentValue(
         accountId: accountId,
-        targetBalance: currentValue,
-        note: noteCtrl.text.trim().isEmpty
-            ? 'investment value update'
-            : noteCtrl.text.trim(),
+        newBalance: currentValue,
+        note: noteCtrl.text.trim().isEmpty ? null : noteCtrl.text.trim(),
       );
-
-      if (diff != 0) {
-        await asset.recordInvestmentPnlLog(
-          accountId: accountId,
-          accountName: accountName,
-          oldBalance: originalValue,
-          newBalance: currentValue,
-          diff: diff,
-          pnlType: pnlType,
-          note: noteCtrl.text.trim().isEmpty ? null : noteCtrl.text.trim(),
-        );
-      }
+      final pnlType = signedDiff >= 0 ? 'profit' : 'loss';
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            diff == 0
+            signedDiff == 0
                 ? 'Updated. No P/L change.'
-                : '${pnlType.toUpperCase()}: ${diff >= 0 ? '+' : '-'}RM ${diff.abs().toStringAsFixed(2)}',
+                : '${pnlType.toUpperCase()}: ${signedDiff >= 0 ? '+' : '-'}RM ${signedDiff.abs().toStringAsFixed(2)}',
           ),
         ),
       );

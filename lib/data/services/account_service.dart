@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../core/utils/constants.dart';
 import '../../core/models/investment_pnl_point.dart';
+import '../../core/utils/investment_pnl_normalizer.dart';
 
 class AccountService {
   final _db = FirebaseFirestore.instance;
@@ -299,76 +300,6 @@ class AccountService {
     await _accounts(_uid).doc(accountId).delete();
   }
 
-  Future<void> updateInvestmentBalance({
-    required String accountId,
-    required double newBalance,
-    String? note,
-  }) async {
-    if (newBalance < 0) throw Exception('Invalid amount');
-
-    final accRef = _accounts(_uid).doc(accountId);
-    final pnlRef = _investmentPnl(_uid).doc();
-    final txRef = _userDoc(
-      _uid,
-    ).collection(AppCollections.transactions).doc(const Uuid().v4());
-
-    await _db.runTransaction((trx) async {
-      final accSnap = await trx.get(accRef);
-      if (!accSnap.exists) throw Exception('Account not found');
-
-      final m = accSnap.data() as Map<String, dynamic>;
-      final type = (m[AccountFields.type] ?? '').toString();
-      final kind = (m[AccountFields.kind] ?? '').toString();
-
-      if (type != 'investment' && kind != 'investment') {
-        throw Exception('Selected account is not investment account');
-      }
-
-      final oldBalance = ((m[AccountFields.balance] ?? 0) as num).toDouble();
-      final diff = newBalance - oldBalance;
-
-      trx.update(accRef, {
-        AccountFields.balance: newBalance,
-        AccountFields.isLiquid: false,
-        AccountFields.kind: 'investment',
-        CommonFields.updatedAt: FieldValue.serverTimestamp(),
-      });
-
-      if (diff != 0) {
-        trx.set(txRef, {
-          CommonFields.id: txRef.id,
-          CommonFields.userId: _uid,
-          TransactionFields.accountId: accountId,
-          TransactionFields.categoryId: 'adjustment',
-          TransactionFields.type: 'adjustment',
-          TransactionFields.amount: diff,
-          TransactionFields.note: note ?? 'manual correction (investment)',
-          TransactionFields.source: 'manual_correction',
-          TransactionFields.splits: {accountId: diff},
-          TransactionFields.splitDetails: {accountId: diff},
-          TransactionFields.datetime: FieldValue.serverTimestamp(),
-          CommonFields.createdAt: FieldValue.serverTimestamp(),
-          CommonFields.updatedAt: FieldValue.serverTimestamp(),
-        });
-
-        trx.set(pnlRef, {
-          CommonFields.id: pnlRef.id,
-          CommonFields.userId: _uid,
-          InvestmentPnlFields.accountId: accountId,
-          InvestmentPnlFields.accountName:
-              (m[AccountFields.name] ?? 'Investment').toString(),
-          InvestmentPnlFields.oldBalance: oldBalance,
-          InvestmentPnlFields.newBalance: newBalance,
-          InvestmentPnlFields.diff: diff.abs(),
-          InvestmentPnlFields.pnlType: diff > 0 ? 'profit' : 'loss',
-          InvestmentPnlFields.note: note,
-          CommonFields.createdAt: FieldValue.serverTimestamp(),
-          CommonFields.updatedAt: FieldValue.serverTimestamp(),
-        });
-      }
-    });
-  }
-
   Stream<List<Map<String, dynamic>>> watchInvestmentPnlLogs(
     String uid, {
     int limit = 50,
@@ -380,30 +311,92 @@ class AccountService {
         .map((s) => s.docs.map((d) => {'_id': d.id, ...d.data()}).toList());
   }
 
-  Future<void> recordInvestmentPnlLog({
+  Future<double> updateInvestmentValue({
     required String uid,
     required String accountId,
-    required String accountName,
-    required double oldBalance,
     required double newBalance,
-    required double diff,
-    required String pnlType,
     String? note,
   }) async {
-    final logDoc = _investmentPnl(uid).doc();
-    await logDoc.set({
-      CommonFields.id: logDoc.id,
-      CommonFields.userId: uid,
-      InvestmentPnlFields.accountId: accountId,
-      InvestmentPnlFields.accountName: accountName,
-      InvestmentPnlFields.oldBalance: oldBalance,
-      InvestmentPnlFields.newBalance: newBalance,
-      InvestmentPnlFields.diff: diff,
-      InvestmentPnlFields.pnlType: pnlType,
-      InvestmentPnlFields.note: note,
-      CommonFields.createdAt: FieldValue.serverTimestamp(),
-      CommonFields.updatedAt: FieldValue.serverTimestamp(),
-      'eventAt': Timestamp.fromDate(DateTime.now()),
+    if (newBalance < 0) throw Exception('Invalid amount');
+
+    final accountRef = _accounts(uid).doc(accountId);
+    final adjustmentRef = _userDoc(
+      uid,
+    ).collection(AppCollections.transactions).doc(const Uuid().v4());
+    final pnlRef = _investmentPnl(uid).doc();
+    final eventAt = DateTime.now();
+
+    return _db.runTransaction<double>((transaction) async {
+      final accountSnap = await transaction.get(accountRef);
+      if (!accountSnap.exists) throw Exception('Account not found');
+
+      final account = accountSnap.data() as Map<String, dynamic>;
+      final type = (account[AccountFields.type] ?? '')
+          .toString()
+          .trim()
+          .toLowerCase();
+      final kind = (account[AccountFields.kind] ?? '')
+          .toString()
+          .trim()
+          .toLowerCase();
+      if (type != 'investment' && kind != 'investment') {
+        throw Exception('Selected account is not investment account');
+      }
+
+      final oldBalance = _toDouble(account[AccountFields.balance]);
+      final rawDiff = newBalance - oldBalance;
+      if (rawDiff.abs() < 0.000001) return 0.0;
+
+      final pnlType = rawDiff > 0 ? 'profit' : 'loss';
+      final signedDiff = normalizeInvestmentPnlDiff(
+        rawDiff: rawDiff,
+        pnlType: pnlType,
+      );
+      final accountName =
+          (account[AccountFields.provider] ??
+                  account[AccountFields.name] ??
+                  'Investment')
+              .toString();
+
+      transaction.update(accountRef, {
+        AccountFields.balance: newBalance,
+        AccountFields.isLiquid: false,
+        AccountFields.kind: 'investment',
+        CommonFields.updatedAt: FieldValue.serverTimestamp(),
+      });
+
+      transaction.set(adjustmentRef, {
+        CommonFields.id: adjustmentRef.id,
+        CommonFields.userId: uid,
+        TransactionFields.accountId: accountId,
+        TransactionFields.categoryId: 'adjustment',
+        TransactionFields.type: 'adjustment',
+        TransactionFields.amount: rawDiff,
+        TransactionFields.note: note ?? 'investment value update',
+        TransactionFields.source: 'manual_correction',
+        TransactionFields.splits: {accountId: rawDiff},
+        TransactionFields.splitDetails: {accountId: rawDiff},
+        TransactionFields.datetime: Timestamp.fromDate(eventAt),
+        CommonFields.createdAt: Timestamp.fromDate(eventAt),
+        CommonFields.updatedAt: Timestamp.fromDate(eventAt),
+      });
+
+      transaction.set(pnlRef, {
+        CommonFields.id: pnlRef.id,
+        CommonFields.userId: uid,
+        InvestmentPnlFields.accountId: accountId,
+        InvestmentPnlFields.accountName: accountName,
+        InvestmentPnlFields.oldBalance: oldBalance,
+        InvestmentPnlFields.newBalance: newBalance,
+        InvestmentPnlFields.diff: signedDiff,
+        InvestmentPnlFields.pnlType: pnlType,
+        InvestmentPnlFields.note: note,
+        CommonFields.createdAt: FieldValue.serverTimestamp(),
+        CommonFields.updatedAt: FieldValue.serverTimestamp(),
+        'eventAt': Timestamp.fromDate(eventAt),
+      });
+
+      return signedDiff;
     });
   }
 
@@ -430,7 +423,10 @@ class AccountService {
     if (date == null) return null;
     return InvestmentPnlPoint(
       date: date,
-      diff: _toDouble(row[InvestmentPnlFields.diff]),
+      diff: normalizeInvestmentPnlDiff(
+        rawDiff: _toDouble(row[InvestmentPnlFields.diff]),
+        pnlType: row[InvestmentPnlFields.pnlType]?.toString(),
+      ),
     );
   }
 
