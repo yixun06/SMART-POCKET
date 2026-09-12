@@ -49,6 +49,21 @@ class LocalStorageService {
     await p.remove(LocalKeys.themeMode);
   }
 
+  Future<String?> readAiInsightCache(String key) async {
+    final p = await _prefs;
+    return p.getString(key);
+  }
+
+  Future<void> saveAiInsightCache(String key, String value) async {
+    final p = await _prefs;
+    await p.setString(key, value);
+  }
+
+  Future<void> removeAiInsightCache(String key) async {
+    final p = await _prefs;
+    await p.remove(key);
+  }
+
   Future<void> clearAll() async {
     final p = await _prefs;
     await p.clear();

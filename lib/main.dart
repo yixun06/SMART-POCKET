@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'application/controllers/allocation_controller.dart';
+import 'application/controllers/ai_insight_controller.dart';
 import 'application/controllers/analytics_controller.dart';
 import 'application/controllers/authentication_controller.dart';
 import 'application/controllers/asset_controller.dart';
@@ -23,9 +24,12 @@ import 'application/controllers/settings_controller.dart';
 import 'application/controllers/transaction_controller.dart';
 import 'application/controllers/recurring_controller.dart';
 import 'application/controllers/theme_controller.dart';
+import 'application/financial_snapshot_collector.dart';
 
 import 'core/utils/theme.dart';
 import 'data/services/account_service.dart';
+import 'data/services/ai_insight_cache_service.dart';
+import 'data/services/ai_insight_service.dart';
 import 'data/services/allocation_service.dart';
 import 'data/services/auth_service.dart';
 import 'data/services/backup_service.dart';
@@ -169,6 +173,7 @@ class _MyAppBodyState extends State<_MyAppBody> {
   late final BudgetController _budgetController;
   late final RecurringController _recurringController;
   late final AllocationController _allocationController;
+  late final AiInsightController _aiInsightController;
   late final AnalyticsController _analyticsController;
   late final AssetController _assetController;
   late final SettingsController _settingsController;
@@ -197,6 +202,10 @@ class _MyAppBodyState extends State<_MyAppBody> {
     final accountService = widget.accountService;
     final shortcutService = widget.shortcutService;
     final transactionService = TransactionService();
+    final budgetService = BudgetService();
+    final allocationService = AssetAllocationService();
+    final categoryService = CategoryService();
+    final recurringService = RecurringService();
     _transactionController = TransactionController(
       transactionService,
       accountService,
@@ -210,7 +219,7 @@ class _MyAppBodyState extends State<_MyAppBody> {
       widget.authService,
     );
     _allocationController = AllocationController(
-      AssetAllocationService(),
+      allocationService,
       widget.authService,
     );
     _assetController = AssetController(
@@ -227,11 +236,27 @@ class _MyAppBodyState extends State<_MyAppBody> {
       shortcutService,
       _transactionController,
     );
-    _categoryController = CategoryController(CategoryService());
-    _budgetController = BudgetController(BudgetService());
+    _categoryController = CategoryController(categoryService);
+    _budgetController = BudgetController(budgetService);
     _recurringController = RecurringController(
-      RecurringService(),
+      recurringService,
       widget.authService,
+    );
+    _aiInsightController = AiInsightController(
+      collector: FinancialSnapshotCollector(
+        source: ExistingFinancialSnapshotDataSource(
+          authService: widget.authService,
+          configController: widget.configController,
+          transactionService: transactionService,
+          budgetService: budgetService,
+          allocationService: allocationService,
+          categoryService: categoryService,
+          recurringService: recurringService,
+          accountService: accountService,
+        ),
+      ),
+      cache: LocalAiInsightCache(widget.localStorage),
+      service: widget.firebaseReady ? AiInsightService.firebase() : null,
     );
     _themeController = widget.themeController;
 
@@ -259,6 +284,7 @@ class _MyAppBodyState extends State<_MyAppBody> {
         await _transactionController.handleAuthChanged();
         await _categoryController.handleAuthChanged();
         await _budgetController.handleAuthChanged();
+        _aiInsightController.handleAuthChanged(user?.uid);
         _shortcutController.rebind();
         _recurringController.resetBinding();
         if (user != null) {
@@ -281,6 +307,7 @@ class _MyAppBodyState extends State<_MyAppBody> {
     _budgetController.dispose();
     _recurringController.dispose();
     _allocationController.dispose();
+    _aiInsightController.dispose();
     _analyticsController.dispose();
     _assetController.dispose();
     _settingsController.dispose();
@@ -332,6 +359,10 @@ class _MyAppBodyState extends State<_MyAppBody> {
 
         ChangeNotifierProvider<AnalyticsController>.value(
           value: _analyticsController,
+        ),
+
+        ChangeNotifierProvider<AiInsightController>.value(
+          value: _aiInsightController,
         ),
 
         ChangeNotifierProvider<SettingsController>.value(
