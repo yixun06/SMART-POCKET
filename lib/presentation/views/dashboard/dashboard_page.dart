@@ -11,6 +11,7 @@ import '../../../core/utils/category_icon_mapper.dart';
 import '../../../core/utils/constants.dart';
 import '../../../core/utils/theme.dart';
 import '../../widgets/navigation/bottom_nav_bar.dart';
+import '../../widgets/smart_insight/smart_insight_card.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -193,6 +194,9 @@ class DashboardPage extends StatelessWidget {
             tx.monthlyExpense,
           ),
           const SizedBox(height: 28), // 加大区块间的间距，让界面呼吸感更强
+
+          const SmartInsightCard(),
+          const SizedBox(height: 28),
 
           _sectionHeader(
             context: context,
