@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../application/controllers/authentication_controller.dart';
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (_autoBiometricTriggered) return;
+    if (kIsWeb || _autoBiometricTriggered) return;
 
     _autoBiometricTriggered = true;
 
@@ -186,137 +187,146 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(18),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Welcome Back',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: colors.onSurface,
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 4),
-
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Sign in to continue managing your wallet.',
-                              style: TextStyle(color: colors.onSurfaceVariant),
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          CustomTextField(
-                            label: 'Email',
-                            hintText: 'you@example.com',
-                            controller: _email,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-
-                          const SizedBox(height: 12),
-
-                          CustomTextField(
-                            label: 'Password',
-                            hintText: '••••••••',
-                            controller: _password,
-                            obscureText: !_showPassword,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _showPassword
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _showPassword = !_showPassword;
-                                });
-                              },
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          PrimaryButton(
-                            label: 'Sign In',
-                            loading: c.isLoading,
-                            onPressed: c.isLoading ? null : () => _login(c),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          OutlinedButton.icon(
-                            onPressed: c.isLoading ? null : () => _google(c),
-                            icon: const Icon(Icons.login_rounded),
-                            label: const Text('Sign In with Google'),
-                            style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 8),
-
-                          OutlinedButton.icon(
-                            onPressed: (c.isLoading || _biometricLocked)
-                                ? null
-                                : () => _biometric(c),
-                            icon: const Icon(Icons.fingerprint_rounded),
-                            label: const Text('Sign In with Biometrics'),
-                            style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(double.infinity, 48),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                          ),
-
-                          if (_biometricLocked)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8),
+                      child: AutofillGroup(
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
                               child: Text(
-                                'Biometric disabled after 3 failed attempts. Use Google or Email/Password.',
+                                'Welcome Back',
                                 style: TextStyle(
-                                  fontSize: 12,
-                                  color: colors.error,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                  color: colors.onSurface,
                                 ),
                               ),
                             ),
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextButton(
-                                onPressed: c.isLoading
-                                    ? null
-                                    : () => context.go('/register'),
-                                child: const Text('Create account'),
-                              ),
-                              TextButton(
-                                onPressed: c.isLoading
-                                    ? null
-                                    : () => context.push('/forgot-password'),
-                                child: const Text('Forgot password?'),
-                              ),
-                            ],
-                          ),
+                            const SizedBox(height: 4),
 
-                          if (c.errorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
+                            Align(
+                              alignment: Alignment.centerLeft,
                               child: Text(
-                                c.errorMessage!,
-                                style: const TextStyle(color: Colors.red),
+                                'Sign in to continue managing your wallet.',
+                                style: TextStyle(
+                                  color: colors.onSurfaceVariant,
+                                ),
                               ),
                             ),
-                        ],
+
+                            const SizedBox(height: 16),
+
+                            CustomTextField(
+                              label: 'Email',
+                              hintText: 'you@example.com',
+                              controller: _email,
+                              keyboardType: TextInputType.emailAddress,
+                                autofillHints: const [AutofillHints.email],
+                            ),
+
+                            const SizedBox(height: 12),
+
+                            CustomTextField(
+                              label: 'Password',
+                              hintText: '••••••••',
+                              controller: _password,
+                              obscureText: !_showPassword,
+                              autofillHints: const [AutofillHints.password],
+                              suffixIcon: IconButton(
+                                tooltip: _showPassword
+                                    ? 'Hide password'
+                                    : 'Show password',
+                                icon: Icon(
+                                  _showPassword
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _showPassword = !_showPassword;
+                                  });
+                                },
+                              ),
+                            ),
+
+                            const SizedBox(height: 16),
+
+                            PrimaryButton(
+                              label: 'Sign In',
+                              loading: c.isLoading,
+                              onPressed: c.isLoading ? null : () => _login(c),
+                            ),
+
+                            const SizedBox(height: 8),
+                            OutlinedButton.icon(
+                              onPressed: c.isLoading ? null : () => _google(c),
+                              icon: const Icon(Icons.login_rounded),
+                              label: const Text('Sign In with Google'),
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size(double.infinity, 48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            ),
+
+                            if (!kIsWeb) ...[
+                              const SizedBox(height: 8),
+                              OutlinedButton.icon(
+                                onPressed: (c.isLoading || _biometricLocked)
+                                    ? null
+                                    : () => _biometric(c),
+                                icon: const Icon(Icons.fingerprint_rounded),
+                                label: const Text('Sign In with Biometrics'),
+                                style: OutlinedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 48),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                              ),
+
+                              if (_biometricLocked)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Text(
+                                    'Biometric disabled after 3 failed attempts. Use Google or Email/Password.',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: colors.error,
+                                    ),
+                                  ),
+                                ),
+                            ],
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                TextButton(
+                                  onPressed: c.isLoading
+                                      ? null
+                                      : () => context.go('/register'),
+                                  child: const Text('Create account'),
+                                ),
+                                TextButton(
+                                  onPressed: c.isLoading
+                                      ? null
+                                      : () => context.push('/forgot-password'),
+                                  child: const Text('Forgot password?'),
+                                ),
+                              ],
+                            ),
+
+                            if (c.errorMessage != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Text(
+                                  c.errorMessage!,
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -346,10 +356,8 @@ class _BrandHeader extends StatelessWidget {
           child: Image.asset(
             AppAssets.getAppLogo(isDark),
             fit: BoxFit.contain,
-            errorBuilder: (_, __, ___) => Image.asset(
-              AppAssets.appLogoLight,
-              fit: BoxFit.contain,
-            ),
+            errorBuilder: (_, __, ___) =>
+                Image.asset(AppAssets.appLogoLight, fit: BoxFit.contain),
           ),
         ),
 

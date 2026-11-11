@@ -6,6 +6,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final Iterable<String>? autofillHints;
   final String? Function(String?)? validator;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -18,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     this.obscureText = false,
     this.keyboardType,
+    this.autofillHints,
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
@@ -30,16 +32,14 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(
-            label!,
-            style: const TextStyle(fontWeight: FontWeight.w600),
-          ),
+          Text(label!, style: const TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
         ],
         TextFormField(
           controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
+          autofillHints: autofillHints,
           validator: validator,
           maxLines: maxLines,
           decoration: InputDecoration(

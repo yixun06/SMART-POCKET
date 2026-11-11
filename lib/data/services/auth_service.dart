@@ -11,7 +11,7 @@ import '../models/user_model.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final g.GoogleSignIn _googleSignIn = g.GoogleSignIn();
+  late final g.GoogleSignIn _googleSignIn = g.GoogleSignIn();
   final LocalAuthentication _localAuth = LocalAuthentication();
 
   User? get currentUser => _auth.currentUser;
@@ -32,6 +32,9 @@ class AuthService {
 
   Future<UserCredential> signInWithGoogle() async {
     try {
+      if (kIsWeb) {
+        return await _auth.signInWithPopup(GoogleAuthProvider());
+      }
       final g.GoogleSignInAccount? account = await _googleSignIn.signIn();
       if (account == null) {
         throw FirebaseAuthException(
@@ -95,7 +98,7 @@ class AuthService {
 
   Future<void> signOut() async {
     await _auth.signOut();
-    await _googleSignIn.signOut();
+    if (!kIsWeb) await _googleSignIn.signOut();
   }
 
   Future<void> reauthenticateWithPassword({

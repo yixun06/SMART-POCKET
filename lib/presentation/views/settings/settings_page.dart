@@ -66,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ],
       ),
-      body: ListView(
+      body: AppAdaptiveBody(currentIndex: 3, child: ListView(
         padding: const EdgeInsets.fromLTRB(14, 8, 14, 110),
         children: [
           _profileCard(_modeText(cfg)),
@@ -213,6 +213,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
         ],
+      ),
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: 3,

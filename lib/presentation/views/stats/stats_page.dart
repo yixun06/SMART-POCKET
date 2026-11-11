@@ -85,7 +85,7 @@ class _StatsPageState extends State<StatsPage> {
           ),
         ],
       ),
-      body: SafeArea(
+      body: AppAdaptiveBody(currentIndex: 2, child: SafeArea(
         child: LayoutBuilder(
           builder: (context, c) {
             final isNarrow = c.maxWidth < 380;
@@ -107,7 +107,7 @@ class _StatsPageState extends State<StatsPage> {
 
                     final rawUsedPct = budget <= 0 ? 0.0 : expense / budget;
                     final usedPct = rawUsedPct.clamp(0.0, 1.0);
-                    final usedPercentText = (usedPct * 100).toStringAsFixed(0);
+                    final usedPercentText = (rawUsedPct * 100).toStringAsFixed(0);
                     final isOverBudget = budget > 0 && expense > budget;
                     final progressColor = isOverBudget ? AppColors.danger : colors.primary;
                     final warningText = isOverBudget
@@ -269,12 +269,23 @@ class _StatsPageState extends State<StatsPage> {
                                   ),
                                   const SizedBox(height: 12),
                                   if (data.isEmpty)
-                                    const Padding(
-                                      padding: EdgeInsets.symmetric(
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
                                         vertical: 20,
                                       ),
                                       child: Center(
-                                        child: Text('No expense data'),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Text('No expenses for this month'),
+                                            const SizedBox(height: 8),
+                                            TextButton.icon(
+                                              onPressed: () => context.push('/add-transaction'),
+                                              icon: const Icon(Icons.add),
+                                              label: const Text('Add a transaction'),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     )
                                   else ...[
@@ -571,6 +582,7 @@ class _StatsPageState extends State<StatsPage> {
             );
           },
         ),
+      ),
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: 2,
