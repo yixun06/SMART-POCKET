@@ -182,7 +182,7 @@ class DashboardPage extends StatelessWidget {
           const SizedBox(width: 8),
         ],
       ),
-      body: ListView(
+      body: AppAdaptiveBody(currentIndex: 0, child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
         physics: const BouncingScrollPhysics(), // 添加 iOS 风格的回弹效果，提升手感
         children: [
@@ -371,12 +371,23 @@ class DashboardPage extends StatelessWidget {
                 ? Padding(
                     padding: const EdgeInsets.all(24),
                     child: Center(
-                      child: Text(
-                        'No transactions yet',
-                        style: TextStyle(
-                          color: colors.onSurfaceVariant,
-                          fontSize: 15,
-                        ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'No transactions yet',
+                            style: TextStyle(
+                              color: colors.onSurfaceVariant,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextButton.icon(
+                            onPressed: () => context.push('/add-transaction'),
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add your first transaction'),
+                          ),
+                        ],
                       ),
                     ),
                   )
@@ -526,6 +537,7 @@ class DashboardPage extends StatelessWidget {
                   ),
           ),
         ],
+      ),
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: 0,

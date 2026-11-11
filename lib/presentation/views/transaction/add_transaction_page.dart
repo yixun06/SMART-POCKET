@@ -373,6 +373,18 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
     final hasCategory = isLazyMode || _categoryId != null;
     final amountValid = (_parsedAmount ?? 0) > 0;
 
+    final missingFields = <String>[
+      if (!amountValid) 'enter an amount greater than zero',
+      if (!hasAccount) 'add a source account',
+      if (isTransfer && !hasToAccount) 'add a different destination account',
+      if (!isTransfer && !hasCategory)
+        cat.isLoading
+            ? 'wait for categories to load'
+            : categories.isEmpty
+            ? 'add a category'
+            : 'select a category',
+    ];
+
     final enabled =
         !_submitting &&
         _canSubmit(
@@ -694,37 +706,54 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
 
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    backgroundColor: enabled
-                        ? colors.primary
-                        : colors.surfaceContainerHighest,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!_submitting && missingFields.isNotEmpty) ...[
+                    Text(
+                      'To continue: ${missingFields.join('; ')}.',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colors.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: enabled
+                            ? colors.primary
+                            : colors.surfaceContainerHighest,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: enabled ? _onSave : null,
+                      child: _submitting
+                          ? SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: colors.onPrimary,
+                              ),
+                            )
+                          : Text(
+                              isLazyMode
+                                  ? (_type == 'income'
+                                        ? 'Add Income'
+                                        : 'Add Expense')
+                                  : 'Save Transaction',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
                     ),
                   ),
-                  onPressed: enabled ? _onSave : null,
-                  child: _submitting
-                      ? SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: colors.onPrimary,
-                          ),
-                        )
-                      : Text(
-                          isLazyMode
-                              ? (_type == 'income'
-                                    ? 'Add Income'
-                                    : 'Add Expense')
-                              : 'Save Transaction',
-                          style: const TextStyle(fontWeight: FontWeight.w800),
-                        ),
-                ),
+                ],
               ),
             ),
           ],

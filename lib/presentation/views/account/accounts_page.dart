@@ -84,9 +84,9 @@ class _AccountPageState extends State<AccountPage> {
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           appBar: AppBar(title: Text(mode == 'lazy' ? 'Assets' : 'Accounts')),
-          body: mode == 'detailed'
+          body: AppAdaptiveBody(currentIndex: 1, child: mode == 'detailed'
               ? _buildDetailedMode(uid)
-              : _buildLazyMode(uid, isDerivedLazy: isDerivedLazy),
+              : _buildLazyMode(uid, isDerivedLazy: isDerivedLazy)),
           floatingActionButton: mode == 'detailed'
               ? FloatingActionButton(
                   backgroundColor: Theme.of(
@@ -159,6 +159,22 @@ class _AccountPageState extends State<AccountPage> {
         return StreamBuilder<List<Map<String, dynamic>>>(
           stream: asset.watchAccounts(),
           builder: (context, accSnap) {
+            if (userSnap.hasError || accSnap.hasError) {
+              return const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text('Unable to load allocation. Please try again.'),
+                ),
+              );
+            }
+            if (!userSnap.hasData || !accSnap.hasData) {
+              return const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+              );
+            }
             final docs = accSnap.data ?? [];
 
             double total = 0;
@@ -202,31 +218,7 @@ class _AccountPageState extends State<AccountPage> {
             return Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(22),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: isDark
-                      ? [
-                          Color.alphaBlend(
-                            colors.primary.withValues(alpha: 0.16),
-                            colors.surfaceContainerLow,
-                          ),
-                          Color.alphaBlend(
-                            colors.secondary.withValues(alpha: 0.1),
-                            colors.surfaceContainerLowest,
-                          ),
-                        ]
-                      : [
-                          Color.alphaBlend(
-                            colors.primary.withValues(alpha: 0.07),
-                            colors.surface,
-                          ),
-                          Color.alphaBlend(
-                            colors.secondary.withValues(alpha: 0.05),
-                            colors.surface,
-                          ),
-                        ],
-                ),
+                color: colors.surfaceContainerLow,
                 border: Border.all(
                   color: colors.outlineVariant.withValues(
                     alpha: isDark ? 0.45 : 0.65,
@@ -247,7 +239,10 @@ class _AccountPageState extends State<AccountPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      spacing: 10,
+                      runSpacing: 4,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
@@ -263,7 +258,6 @@ class _AccountPageState extends State<AccountPage> {
                             size: 18,
                           ),
                         ),
-                        const SizedBox(width: 10),
                         Text(
                           'Asset Allocation',
                           style: TextStyle(
@@ -272,7 +266,6 @@ class _AccountPageState extends State<AccountPage> {
                             fontSize: 15,
                           ),
                         ),
-                        const Spacer(),
                         TextButton(
                           onPressed: () => context.push('/allocation-goals'),
                           child: const Text('Set Goals'),
@@ -281,13 +274,23 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Actual vs target allocation by category',
+                      total > 0 ? 'Actual vs target allocation by category' : 'Your target allocation',
                       style: TextStyle(
                         fontSize: 12,
                         color: colors.onSurfaceVariant,
                       ),
                     ),
                     const SizedBox(height: 12),
+                    if (total <= 0) ...[
+                      Text(
+                        'Actual allocation will appear when the total account balance is above RM 0.00.',
+                        style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 12),
+                      _allocationTargetRow(context, 'Savings', targetSavings),
+                      _allocationTargetRow(context, 'Investment', targetInvest),
+                      _allocationTargetRow(context, 'Daily Use', targetDaily),
+                    ] else ...[
                     _allocRow(
                       context,
                       label: 'Savings',
@@ -314,16 +317,6 @@ class _AccountPageState extends State<AccountPage> {
                       target: targetDaily,
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
-                    if (docs.isEmpty) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        'Not enough account data to compute allocation',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                    ],
                     if (tips.isNotEmpty) ...[
                       const SizedBox(height: 12),
                       Container(
@@ -371,6 +364,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       ),
                     ],
+                    ],
                   ],
                 ),
               ),
@@ -378,6 +372,20 @@ class _AccountPageState extends State<AccountPage> {
           },
         );
       },
+    );
+  }
+
+  Widget _allocationTargetRow(BuildContext context, String label, double target) {
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Expanded(child: Text(label, style: TextStyle(color: colors.onSurface))),
+          Text('${target.toStringAsFixed(0)}% target',
+              style: TextStyle(color: colors.onSurfaceVariant, fontWeight: FontWeight.w600)),
+        ],
+      ),
     );
   }
 
@@ -518,12 +526,16 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Text(
-                    'Lazy balances are auto-consolidated from Detailed Mode and cannot be edited here. Update underlying accounts in Detailed Mode to sync.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.info_outline_rounded, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      const SizedBox(width: 8),
+                      Expanded(child: Text(
+                        'Balances are synced from Detailed Mode. Edit the original accounts there.',
+                        style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      )),
+                    ],
                   ),
                 ),
               ),
@@ -1132,7 +1144,6 @@ class _AccountPageState extends State<AccountPage> {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
-    final liquidShare = total > 0 ? (liquid / total).clamp(0.0, 1.0) : 0.0;
 
     final cardGradient = isDark
         ? [
@@ -1176,36 +1187,15 @@ class _AccountPageState extends State<AccountPage> {
         children: [
           Row(
             children: [
-              Text(
+              Expanded(child: Text(
                 'Total Assets',
                 style: TextStyle(
                   color: titleColor,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                 ),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? colors.primaryContainer.withValues(alpha: 0.4)
-                      : const Color(0xFFDCEAFF),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: isDark
-                        ? colors.primary.withValues(alpha: 0.3)
-                        : const Color(0xFFC5DBFF),
-                  ),
-                ),
-                child: Icon(
-                  Icons.account_balance_wallet_rounded,
-                  color: isDark
-                      ? colors.onPrimaryContainer
-                      : const Color(0xFF2C5BAA),
-                  size: 19,
-                ),
-              ),
+              )),
+              Icon(Icons.account_balance_wallet_rounded, color: titleColor, size: 20),
             ],
           ),
           const SizedBox(height: 14),
@@ -1227,20 +1217,8 @@ class _AccountPageState extends State<AccountPage> {
               height: 1.2,
             ),
           ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(99),
-            child: LinearProgressIndicator(
-              minHeight: 6,
-              value: liquidShare,
-              backgroundColor: isDark
-                  ? colors.surfaceContainerHighest
-                  : const Color(0xFFDCE9FF),
-              valueColor: AlwaysStoppedAnimation<Color>(
-                isDark ? colors.primary : const Color(0xFF3A72D8),
-              ),
-            ),
-          ),
+          const SizedBox(height: 16),
+          Divider(height: 1, color: colors.outlineVariant),
           const SizedBox(height: 12),
           Row(
             children: [
@@ -1256,7 +1234,7 @@ class _AccountPageState extends State<AccountPage> {
                 child: _summaryStatTile(
                   context: context,
                   label: 'Accounts',
-                  value: '$count Account(s)',
+                  value: '$count',
                 ),
               ),
             ],
@@ -1272,21 +1250,7 @@ class _AccountPageState extends State<AccountPage> {
     required String value,
   }) {
     final colors = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-      decoration: BoxDecoration(
-        color: isDark
-            ? colors.surfaceContainerHighest.withValues(alpha: 0.45)
-            : Colors.white.withValues(alpha: 0.66),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: isDark
-              ? colors.outlineVariant.withValues(alpha: 0.36)
-              : const Color(0xFFD2E0F7),
-        ),
-      ),
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -1303,7 +1267,6 @@ class _AccountPageState extends State<AccountPage> {
             ),
           ),
         ],
-      ),
     );
   }
 
