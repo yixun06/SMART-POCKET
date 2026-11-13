@@ -46,7 +46,9 @@ void main() {
     await tester.pumpWidget(app(routes));
     expect(find.byType(NavigationRail), findsNothing);
     expect(find.bySemanticsLabel('Add transaction'), findsOneWidget);
-    await tester.tap(find.bySemanticsLabel('Add transaction'));
+    final addButton = find.bySemanticsLabel('Add transaction');
+    final top = tester.getTopLeft(addButton);
+    await tester.tapAt(top + const Offset(28, 5));
     await tester.pumpAndSettle();
     expect(find.text('add-transaction page'), findsOneWidget);
     semantics.dispose();

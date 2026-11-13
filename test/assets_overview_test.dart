@@ -48,7 +48,7 @@ class _FakeAssets extends ChangeNotifier implements AssetController {
 void main() {
   for (final dark in [false, true]) {
     testWidgets(
-      'zero balance shows targets without deviations (${dark ? 'dark' : 'light'})',
+      'zero balance explains when allocation becomes available (${dark ? 'dark' : 'light'})',
       (tester) async {
         tester.view.physicalSize = const Size(375, 812);
         tester.view.devicePixelRatio = 1;
@@ -67,22 +67,17 @@ void main() {
         );
         await tester.pumpAndSettle();
         expect(find.text('RM 0.00'), findsWidgets);
-        expect(find.text('40% target'), findsOneWidget);
-        expect(find.text('35% target'), findsOneWidget);
-        expect(find.text('25% target'), findsOneWidget);
-        expect(find.text('Allocation deviation'), findsNothing);
         expect(
-          find.textContaining('Actual allocation will appear'),
+          find.text('Allocation requires positive, categorized balances.'),
           findsOneWidget,
         );
+        expect(find.text('Edit goals'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
   }
 
-  testWidgets('positive balance still shows actual allocation and deviations', (
-    tester,
-  ) async {
+  testWidgets('positive balance shows actual allocation', (tester) async {
     tester.view.physicalSize = const Size(375, 812);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -96,9 +91,10 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('100% / 40%'), findsOneWidget);
-    expect(find.text('Allocation deviation'), findsOneWidget);
-    expect(find.textContaining('Actual allocation will appear'), findsNothing);
+    expect(find.text('Savings 100%'), findsOneWidget);
+    expect(find.text('Investment 0%'), findsOneWidget);
+    expect(find.text('Daily Use 0%'), findsOneWidget);
+    expect(find.text('Edit goals'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

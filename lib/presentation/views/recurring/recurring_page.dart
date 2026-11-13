@@ -64,6 +64,7 @@ class _RecurringPageState extends State<RecurringPage> {
   @override
   Widget build(BuildContext context) {
     final rc = context.watch<RecurringController>();
+    final category = context.watch<CategoryController>();
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final appColors = theme.extension<AppThemeColors>()!;
@@ -128,11 +129,24 @@ class _RecurringPageState extends State<RecurringPage> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
+                          CategoryIconMapper.badge(
+                            isTransfer ? null : category.categories.where((c) => c.id == p.categoryId).firstOrNull?.icon,
+                            fallback: icon, color: color, size: 36,
+                            regular: CircleAvatar(
                             radius: 18,
                             backgroundColor: color.withValues(alpha: 0.14),
-                            child: Icon(icon, color: color, size: 18),
-                          ),
+                            child: CategoryIconMapper.display(
+                              isTransfer
+                                  ? null
+                                  : category.categories
+                                        .where((c) => c.id == p.categoryId)
+                                        .firstOrNull
+                                        ?.icon,
+                              fallback: icon,
+                              color: color,
+                              size: 18,
+                            ),
+                          )),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Column(
@@ -522,7 +536,12 @@ class _RecurringFormSheetState extends State<_RecurringFormSheet> {
                             CircleAvatar(
                               radius: 11,
                               backgroundColor: color.withValues(alpha: 0.14),
-                              child: Icon(iconData, size: 14, color: color),
+                              child: CategoryIconMapper.display(
+                                iconKey,
+                                fallback: iconData,
+                                size: 14,
+                                color: color,
+                              ),
                             ),
                             const SizedBox(width: 8),
                             Text(c.name, overflow: TextOverflow.ellipsis),

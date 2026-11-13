@@ -592,10 +592,9 @@ class _TransactionsPageState extends State<TransactionsPage> {
           id == 'transfer' ||
           id == 'investment_pnl' ||
           id == 'account_adjustment' ||
-          id == 'adjustment')
-        {
-          return null;
-        }
+          id == 'adjustment') {
+        return null;
+      }
       final hit = catCtrl.categories.where((c) => c.id == id).toList();
       return hit.isEmpty ? null : hit.first.icon;
     }
@@ -887,13 +886,27 @@ class _TransactionsPageState extends State<TransactionsPage> {
                         ),
                         child: Row(
                           children: [
-                            CircleAvatar(
+                            CategoryIconMapper.badge(
+                              (isTransfer || isProfitEvent || isLossEvent || isAdjustment || isPnl) ? null : categoryIconKey,
+                              fallback: iconData, color: iconColor, size: 40,
+                              regular: CircleAvatar(
                               radius: 20,
                               backgroundColor: iconColor.withValues(
                                 alpha: 0.16,
                               ),
-                              child: Icon(iconData, size: 18, color: iconColor),
-                            ),
+                              child: CategoryIconMapper.display(
+                                (isTransfer ||
+                                        isProfitEvent ||
+                                        isLossEvent ||
+                                        isAdjustment ||
+                                        isPnl)
+                                    ? null
+                                    : categoryIconKey,
+                                fallback: iconData,
+                                size: 18,
+                                color: iconColor,
+                              ),
+                            )),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(

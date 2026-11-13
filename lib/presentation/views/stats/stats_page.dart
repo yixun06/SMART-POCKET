@@ -85,504 +85,553 @@ class _StatsPageState extends State<StatsPage> {
           ),
         ],
       ),
-      body: AppAdaptiveBody(currentIndex: 2, child: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, c) {
-            final isNarrow = c.maxWidth < 380;
-            final hPad = isNarrow ? 12.0 : 16.0;
+      body: AppAdaptiveBody(
+        currentIndex: 2,
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, c) {
+              final isNarrow = c.maxWidth < 380;
+              final hPad = c.maxWidth > 720
+                  ? (c.maxWidth - 680) / 2
+                  : (isNarrow ? 16.0 : 20.0);
 
-            return ListView(
-              padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 110),
-              children: [
-                _monthYearPicker(),
-                const SizedBox(height: 14),
-                StreamBuilder<Map<String, double>>(
-                  stream: analytics.watchMonthlySummary(selectedMonth),
-                  builder: (context, sumSnap) {
-                    final expense = _toDouble(sumSnap.data?['expense']);
-                    final budget = _toDouble(budgetCtrl.monthlyBudget);
-                    final appColors = Theme.of(
-                      context,
-                    ).extension<AppThemeColors>()!;
+              return ListView(
+                padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 110),
+                children: [
+                  _monthYearPicker(),
+                  const SizedBox(height: 14),
+                  StreamBuilder<Map<String, double>>(
+                    stream: analytics.watchMonthlySummary(selectedMonth),
+                    builder: (context, sumSnap) {
+                      final expense = _toDouble(sumSnap.data?['expense']);
+                      final budget = _toDouble(budgetCtrl.monthlyBudget);
+                      final appColors = Theme.of(
+                        context,
+                      ).extension<AppThemeColors>()!;
 
-                    final rawUsedPct = budget <= 0 ? 0.0 : expense / budget;
-                    final usedPct = rawUsedPct.clamp(0.0, 1.0);
-                    final usedPercentText = (rawUsedPct * 100).toStringAsFixed(0);
-                    final isOverBudget = budget > 0 && expense > budget;
-                    final progressColor = isOverBudget ? AppColors.danger : colors.primary;
-                    final warningText = isOverBudget
-                        ? 'Budget exceeded by RM ${(expense - budget).toStringAsFixed(2)}'
-                        : null;
+                      final rawUsedPct = budget <= 0 ? 0.0 : expense / budget;
+                      final usedPct = rawUsedPct.clamp(0.0, 1.0);
+                      final usedPercentText = (rawUsedPct * 100)
+                          .toStringAsFixed(0);
+                      final isOverBudget = budget > 0 && expense > budget;
+                      final progressColor = isOverBudget
+                          ? AppColors.danger
+                          : colors.primary;
+                      final warningText = isOverBudget
+                          ? 'Budget exceeded by RM ${(expense - budget).toStringAsFixed(2)}'
+                          : null;
 
-                    return Column(
-                      children: [
-                        _card(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Monthly Budget',
-                                style: TextStyle(
-                                  fontSize: isNarrow ? 20 : 24,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Center(
-                                child: SizedBox(
-                                  width: isNarrow ? 132 : 152,
-                                  height: isNarrow ? 132 : 152,
-                                  child: Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      PieChart(
-                                        PieChartData(
-                                          startDegreeOffset: -90,
-                                          centerSpaceRadius: isNarrow ? 46 : 54,
-                                          sectionsSpace: 0,
-                                          sections: [
-                                            PieChartSectionData(
-                                              value: usedPct * 100,
-                                              color: progressColor,
-                                              title: '',
-                                            ),
-                                            PieChartSectionData(
-                                              value: (1 - usedPct) * 100,
-                                              color: colors.outlineVariant,
-                                              title: '',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          SafeText(
-                                            '$usedPercentText%',
-                                            style: TextStyle(
-                                              fontSize: isNarrow ? 20 : 24,
-                                              fontWeight: FontWeight.w800,
-                                              color: appColors.textNumberPrimary,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Used',
-                                            style: TextStyle(
-                                              color: colors.onSurfaceVariant,
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Center(
-                                child: SafeText(
-                                  'RM ${expense.toStringAsFixed(2)} / RM ${budget.toStringAsFixed(2)}',
+                      return Column(
+                        children: [
+                          _card(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Monthly Budget',
                                   style: TextStyle(
-                                    color: colors.onSurfaceVariant,
-                                    fontWeight: FontWeight.w800,
+                                    fontSize: isNarrow ? 20 : 24,
+                                    fontWeight: FontWeight.w700,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
-                              ),
-                              if (warningText != null) ...[
-                                const SizedBox(height: 10),
-                                Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: appColors.softWarningSurface,
-                                    borderRadius: BorderRadius.circular(14),
-                                    border: Border.all(
-                                      color: AppColors.danger.withValues(alpha: 0.22),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Icon(
-                                        Icons.warning_amber_rounded,
-                                        size: 18,
-                                        color: AppColors.danger,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          warningText,
-                                          style: TextStyle(
-                                            color: AppColors.danger,
-                                            fontWeight: FontWeight.w800,
+                                const SizedBox(height: 16),
+                                Center(
+                                  child: SizedBox(
+                                    width: isNarrow ? 132 : 152,
+                                    height: isNarrow ? 132 : 152,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        PieChart(
+                                          PieChartData(
+                                            startDegreeOffset: -90,
+                                            centerSpaceRadius: isNarrow
+                                                ? 46
+                                                : 54,
+                                            sectionsSpace: 0,
+                                            sections: [
+                                              PieChartSectionData(
+                                                value: usedPct * 100,
+                                                radius: 14,
+                                                color: progressColor,
+                                                title: '',
+                                              ),
+                                              PieChartSectionData(
+                                                value: (1 - usedPct) * 100,
+                                                radius: 14,
+                                                color: colors.outlineVariant,
+                                                title: '',
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 14),
-
-                        StreamBuilder<List<Map<String, dynamic>>>(
-                          stream: analytics.watchMonthlyExpenseByCategory(
-                            selectedMonth,
-                          ),
-                          builder: (context, catSnap) {
-                            final data = catSnap.data ?? [];
-                            final total = data.fold<double>(
-                              0,
-                              (p, e) => p + _toDouble(e['amount']),
-                            );
-                            final sortedData = [...data]
-                              ..sort(
-                                (a, b) => _toDouble(b['amount']).compareTo(
-                                  _toDouble(a['amount']),
-                                ),
-                              );
-
-                            final palette = <Color>[
-                              colors.primary,
-                              colors.secondary,
-                              colors.tertiary,
-                              colors.error,
-                              colors.onSurfaceVariant,
-                            ];
-
-                            return _card(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Spending by Category',
-                                    style: TextStyle(
-                                      fontSize: isNarrow ? 20 : 24,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  if (data.isEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 20,
-                                      ),
-                                      child: Center(
-                                        child: Column(
+                                        Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Text('No expenses for this month'),
-                                            const SizedBox(height: 8),
-                                            TextButton.icon(
-                                              onPressed: () => context.push('/add-transaction'),
-                                              icon: const Icon(Icons.add),
-                                              label: const Text('Add a transaction'),
+                                            SafeText(
+                                              budget <= 0
+                                                  ? '?'
+                                                  : '$usedPercentText%',
+                                              style: TextStyle(
+                                                fontSize: isNarrow ? 20 : 24,
+                                                fontWeight: FontWeight.w800,
+                                                color:
+                                                    appColors.textNumberPrimary,
+                                              ),
+                                            ),
+                                            Text(
+                                              budget <= 0
+                                                  ? 'No budget'
+                                                  : 'Used',
+                                              style: TextStyle(
+                                                color: colors.onSurfaceVariant,
+                                                fontSize: 11,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    )
-                                  else ...[
-                                    Center(
-                                      child: SizedBox(
-                                        width: isNarrow ? 176 : 204,
-                                        height: isNarrow ? 176 : 204,
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            PieChart(
-                                              PieChartData(
-                                                centerSpaceRadius:
-                                                    isNarrow ? 56 : 66,
-                                                sectionsSpace: 2,
-                                                sections: List.generate(
-                                                  sortedData.length,
-                                                  (i) {
-                                                    final amount = _toDouble(
-                                                      sortedData[i]['amount'],
-                                                    );
-                                                    final v = total <= 0
-                                                        ? 0.0
-                                                        : (amount / total * 100);
-                                                    return PieChartSectionData(
-                                                      value: v,
-                                                      color: palette[i % palette.length],
-                                                      radius: isNarrow ? 44 : 52,
-                                                      title: '',
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            ),
-                                            Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  'Total',
-                                                  style: TextStyle(
-                                                    color: colors.onSurfaceVariant,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                SafeText(
-                                                  'RM ${total.toStringAsFixed(2)}',
-                                                  style: TextStyle(
-                                                    color: appColors.textNumberPrimary,
-                                                    fontSize: isNarrow ? 18 : 22,
-                                                    fontWeight: FontWeight.w800,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Center(
+                                  child: SafeText(
+                                    'RM ${expense.toStringAsFixed(2)} / RM ${budget.toStringAsFixed(2)}',
+                                    style: TextStyle(
+                                      color: colors.onSurfaceVariant,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                if (warningText != null) ...[
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: appColors.softWarningSurface,
+                                      borderRadius: BorderRadius.circular(14),
+                                      border: Border.all(
+                                        color: AppColors.danger.withValues(
+                                          alpha: 0.22,
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(height: 14),
-                                    ...List.generate(sortedData.length, (i) {
-                                      final id = sortedData[i]['categoryId']
-                                          .toString();
-                                      final amount = _toDouble(sortedData[i]['amount']);
-                                      final pct = total <= 0
-                                          ? 0.0
-                                          : amount / total * 100;
-                                      final color = palette[i % palette.length];
-
-                                      return Padding(
-                                        padding: const EdgeInsets.only(bottom: 10),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 10,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: colors.surfaceContainerHighest
-                                                .withValues(alpha: 0.35),
-                                            borderRadius:
-                                                BorderRadius.circular(16),
-                                            border: Border.all(
-                                              color: colors.outlineVariant
-                                                  .withValues(alpha: 0.45),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(
+                                          Icons.warning_amber_rounded,
+                                          size: 18,
+                                          color: AppColors.danger,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            warningText,
+                                            style: TextStyle(
+                                              color: AppColors.danger,
+                                              fontWeight: FontWeight.w800,
                                             ),
                                           ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+
+                          StreamBuilder<List<Map<String, dynamic>>>(
+                            stream: analytics.watchMonthlyExpenseByCategory(
+                              selectedMonth,
+                            ),
+                            builder: (context, catSnap) {
+                              final data = catSnap.data ?? [];
+                              final total = data.fold<double>(
+                                0,
+                                (p, e) => p + _toDouble(e['amount']),
+                              );
+                              final sortedData = [...data]
+                                ..sort(
+                                  (a, b) => _toDouble(
+                                    b['amount'],
+                                  ).compareTo(_toDouble(a['amount'])),
+                                );
+
+                              final palette = <Color>[
+                                colors.primary,
+                                colors.secondary,
+                                colors.tertiary,
+                                colors.error,
+                                colors.onSurfaceVariant,
+                              ];
+
+                              return _card(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Spending by Category',
+                                      style: TextStyle(
+                                        fontSize: isNarrow ? 20 : 24,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    if (data.isEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 20,
+                                        ),
+                                        child: Center(
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    width: 10,
-                                                    height: 10,
-                                                    decoration: BoxDecoration(
-                                                      color: color,
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Expanded(
-                                                    child: Text(
-                                                      catName(id),
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        color: colors.onSurface,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Flexible(
-                                                    child: FittedBox(
-                                                      fit: BoxFit.scaleDown,
-                                                      alignment:
-                                                          Alignment.centerRight,
-                                                      child: Text(
-                                                        'RM ${amount.toStringAsFixed(2)}',
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w800,
-                                                          color:
-                                                              colors.onSurface,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(width: 8),
-                                                  Text(
-                                                    '${pct.toStringAsFixed(1)}%',
-                                                    style: TextStyle(
-                                                      color: colors
-                                                          .onSurfaceVariant,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                ],
+                                              const Text(
+                                                'No expenses for this month',
                                               ),
                                               const SizedBox(height: 8),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(99),
-                                                child: LinearProgressIndicator(
-                                                  minHeight: 8,
-                                                  value: (pct / 100)
-                                                      .clamp(0.0, 1.0),
-                                                  backgroundColor:
-                                                      colors.outlineVariant
-                                                          .withValues(alpha: 0.25),
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<Color>(
-                                                    color,
-                                                  ),
+                                              TextButton.icon(
+                                                onPressed: () => context.push(
+                                                  '/add-transaction',
+                                                ),
+                                                icon: const Icon(Icons.add),
+                                                label: const Text(
+                                                  'Add a transaction',
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      );
-                                    }),
+                                      )
+                                    else ...[
+                                      Center(
+                                        child: SizedBox(
+                                          width: isNarrow ? 176 : 204,
+                                          height: isNarrow ? 176 : 204,
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              PieChart(
+                                                PieChartData(
+                                                  centerSpaceRadius: isNarrow
+                                                      ? 56
+                                                      : 66,
+                                                  sectionsSpace: 2,
+                                                  sections: List.generate(
+                                                    sortedData.length,
+                                                    (i) {
+                                                      final amount = _toDouble(
+                                                        sortedData[i]['amount'],
+                                                      );
+                                                      final v = total <= 0
+                                                          ? 0.0
+                                                          : (amount /
+                                                                total *
+                                                                100);
+                                                      return PieChartSectionData(
+                                                        value: v,
+                                                        color:
+                                                            palette[i %
+                                                                palette.length],
+                                                        radius: isNarrow
+                                                            ? 28
+                                                            : 32,
+                                                        title: '',
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    'Total',
+                                                    style: TextStyle(
+                                                      color: colors
+                                                          .onSurfaceVariant,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 2),
+                                                  SafeText(
+                                                    'RM ${total.toStringAsFixed(2)}',
+                                                    style: TextStyle(
+                                                      color: appColors
+                                                          .textNumberPrimary,
+                                                      fontSize: isNarrow
+                                                          ? 18
+                                                          : 22,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 14),
+                                      ...List.generate(sortedData.length, (i) {
+                                        final id = sortedData[i]['categoryId']
+                                            .toString();
+                                        final amount = _toDouble(
+                                          sortedData[i]['amount'],
+                                        );
+                                        final pct = total <= 0
+                                            ? 0.0
+                                            : amount / total * 100;
+                                        final color =
+                                            palette[i % palette.length];
+
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 10,
+                                          ),
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 10,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: colors
+                                                  .surfaceContainerHighest
+                                                  .withValues(alpha: 0.35),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              border: Border.all(
+                                                color: colors.outlineVariant
+                                                    .withValues(alpha: 0.45),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 10,
+                                                      height: 10,
+                                                      decoration: BoxDecoration(
+                                                        color: color,
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        catName(id),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          color:
+                                                              colors.onSurface,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Flexible(
+                                                      child: FittedBox(
+                                                        fit: BoxFit.scaleDown,
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child: Text(
+                                                          'RM ${amount.toStringAsFixed(2)}',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w800,
+                                                            color: colors
+                                                                .onSurface,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Text(
+                                                      '${pct.toStringAsFixed(1)}%',
+                                                      style: TextStyle(
+                                                        color: colors
+                                                            .onSurfaceVariant,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 8),
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(99),
+                                                  child: LinearProgressIndicator(
+                                                    minHeight: 8,
+                                                    value: (pct / 100).clamp(
+                                                      0.0,
+                                                      1.0,
+                                                    ),
+                                                    backgroundColor: colors
+                                                        .outlineVariant
+                                                        .withValues(
+                                                          alpha: 0.25,
+                                                        ),
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                          Color
+                                                        >(color),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ],
                                   ],
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 14),
-
-                        StreamBuilder<List<Map<String, dynamic>>>(
-                          stream: analytics.watchMonthlyCashFlowCalendar(
-                            selectedMonth,
+                                ),
+                              );
+                            },
                           ),
-                          builder: (context, calSnap) {
-                            final daily = calSnap.data ?? [];
-                            return _card(
-                              child: _cashFlowCalendar(
-                                month: selectedMonth,
-                                daily: daily,
-                              ),
-                            );
-                          },
-                        ),
+                          const SizedBox(height: 14),
 
-                        const SizedBox(height: 14),
-                        _investmentPerformanceCard(),
-
-                        const SizedBox(height: 14),
-
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: colors.onSurface,
-                            side: BorderSide(color: colors.outlineVariant),
-                            minimumSize: const Size.fromHeight(48),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                          StreamBuilder<List<Map<String, dynamic>>>(
+                            stream: analytics.watchMonthlyCashFlowCalendar(
+                              selectedMonth,
                             ),
+                            builder: (context, calSnap) {
+                              final daily = calSnap.data ?? [];
+                              return _card(
+                                child: _cashFlowCalendar(
+                                  month: selectedMonth,
+                                  daily: daily,
+                                ),
+                              );
+                            },
                           ),
-                          onPressed: () async {
-                            final messenger = ScaffoldMessenger.of(context);
-                            final navigator = Navigator.of(context);
-                            final rootNavigator = Navigator.of(
-                              context,
-                              rootNavigator: true,
-                            );
-                            final budgetController = context
-                                .read<BudgetController>();
-                            final exportMonth =
-                                await _pickExportMonthBottomSheet(
-                                  navigator.context,
-                                  selectedMonth,
-                                );
-                            if (exportMonth == null) return;
 
-                            showDialog(
-                              // ignore: use_build_context_synchronously
-                              context: rootNavigator.context,
-                              barrierDismissible: false,
-                              builder: (_) => const Center(
-                                child: CircularProgressIndicator(),
+                          const SizedBox(height: 14),
+                          _investmentPerformanceCard(),
+
+                          const SizedBox(height: 14),
+
+                          OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: colors.onSurface,
+                              side: BorderSide(color: colors.outlineVariant),
+                              minimumSize: const Size.fromHeight(48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            );
+                            ),
+                            onPressed: () async {
+                              final messenger = ScaffoldMessenger.of(context);
+                              final navigator = Navigator.of(context);
+                              final rootNavigator = Navigator.of(
+                                context,
+                                rootNavigator: true,
+                              );
+                              final budgetController = context
+                                  .read<BudgetController>();
+                              final exportMonth =
+                                  await _pickExportMonthBottomSheet(
+                                    navigator.context,
+                                    selectedMonth,
+                                  );
+                              if (exportMonth == null) return;
 
-                            try {
-                              final exportBudget = _toDouble(
-                                budgetController.monthlyBudget,
-                              );
-                              final path = await analytics.exportMonthlyReport(
-                                month: exportMonth,
-                                categoryNameResolver: catName,
-                                budget: exportBudget,
-                                totalAssets: totalAssets(),
-                                accounts: List<Map<String, dynamic>>.from(
-                                  txCtrl.accounts,
+                              showDialog(
+                                // ignore: use_build_context_synchronously
+                                context: rootNavigator.context,
+                                barrierDismissible: false,
+                                builder: (_) => const Center(
+                                  child: CircularProgressIndicator(),
                                 ),
                               );
 
-                              if (!mounted) return;
-                              rootNavigator.pop();
+                              try {
+                                final exportBudget = _toDouble(
+                                  budgetController.monthlyBudget,
+                                );
+                                final path = await analytics
+                                    .exportMonthlyReport(
+                                      month: exportMonth,
+                                      categoryNameResolver: catName,
+                                      budget: exportBudget,
+                                      totalAssets: totalAssets(),
+                                      accounts: List<Map<String, dynamic>>.from(
+                                        txCtrl.accounts,
+                                      ),
+                                    );
 
-                              final openResult = await OpenFilex.open(path);
-                              messenger.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    openResult.type.name == 'done'
-                                        ? 'Report generated: ${DateFormat('MMM yyyy').format(exportMonth)}'
-                                        : 'Report exported: $path',
+                                if (!mounted) return;
+                                rootNavigator.pop();
+
+                                final openResult = await OpenFilex.open(path);
+                                messenger.showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      openResult.type.name == 'done'
+                                          ? 'Report generated: ${DateFormat('MMM yyyy').format(exportMonth)}'
+                                          : 'Report exported: $path',
+                                    ),
+                                    action: SnackBarAction(
+                                      label: 'Share',
+                                      onPressed: () async {
+                                        await Share.shareXFiles([
+                                          XFile(path),
+                                        ], text: 'Smart Pocket Monthly Report');
+                                      },
+                                    ),
                                   ),
-                                  action: SnackBarAction(
-                                    label: 'Share',
-                                    onPressed: () async {
-                                      await Share.shareXFiles([
-                                        XFile(path),
-                                      ], text: 'Smart Pocket Monthly Report');
-                                    },
+                                );
+                              } on TimeoutException {
+                                if (!mounted) return;
+                                rootNavigator.pop();
+                                messenger.showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Report Failed to Generate (timeout). Please retry.',
+                                    ),
                                   ),
-                                ),
-                              );
-                            } on TimeoutException {
-                              if (!mounted) return;
-                              rootNavigator.pop();
-                              messenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Report Failed to Generate (timeout). Please retry.',
+                                );
+                              } catch (e) {
+                                if (!mounted) return;
+                                rootNavigator.pop();
+                                messenger.showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Report Failed to Generate: $e',
+                                    ),
                                   ),
-                                ),
-                              );
-                            } catch (e) {
-                              if (!mounted) return;
-                              rootNavigator.pop();
-                              messenger.showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Report Failed to Generate: $e',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.download_rounded, size: 18),
-                          label: const Text('Export PDF Report'),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
-            );
-          },
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.download_rounded, size: 18),
+                            label: const Text('Export PDF Report'),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
         ),
-      ),
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: 2,
@@ -1012,7 +1061,7 @@ class _StatsPageState extends State<StatsPage> {
         children: [
           IconButton(
             visualDensity: VisualDensity.compact,
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             onPressed: () async {
               final prev = DateTime(
                 selectedMonth.year,
@@ -1047,21 +1096,24 @@ class _StatsPageState extends State<StatsPage> {
                 });
                 await budgetController.changeMonth(m);
               },
-              child: Center(
-                child: SafeText(
-                  label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: colors.onSurface,
+              child: SizedBox(
+                height: 48,
+                child: Center(
+                  child: SafeText(
+                    label,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: colors.onSurface,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ),
           ),
           IconButton(
             visualDensity: VisualDensity.compact,
-            constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
             onPressed:
                 DateTime(
                   selectedMonth.year,
@@ -1334,11 +1386,13 @@ class _StatsPageState extends State<StatsPage> {
     final colors = theme.colorScheme;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: colors.outlineVariant),
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: colors.outlineVariant.withValues(alpha: 0.65),
+        ),
       ),
       child: child,
     );

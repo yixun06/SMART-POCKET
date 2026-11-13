@@ -405,6 +405,28 @@ class MalaysiaProviderPresets {
       logoAsset: 'lib/core/utils/provider_logo/kwsp.png',
     ),
 
+    // Mobile prepaid balances
+    const MalaysiaProviderPreset(
+      providerName: 'Hotlink',
+      type: 'ewallet',
+      defaultTag: 'DAILY_USE',
+      isLiquid: true,
+      iconKey: 'ewallet',
+      icon: Icons.account_balance_wallet_rounded,
+      color: Color(0xFFD61F24),
+      logoAsset: 'lib/core/utils/provider_logo/hotlink.png',
+    ),
+    const MalaysiaProviderPreset(
+      providerName: 'XOX',
+      type: 'ewallet',
+      defaultTag: 'DAILY_USE',
+      isLiquid: true,
+      iconKey: 'ewallet',
+      icon: Icons.account_balance_wallet_rounded,
+      color: Color(0xFF1D1D1D),
+      logoAsset: 'lib/core/utils/provider_logo/xox.png',
+    ),
+
     // Cash
     const MalaysiaProviderPreset(
       providerName: 'Physical Cash',

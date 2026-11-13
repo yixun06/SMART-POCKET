@@ -65,6 +65,7 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   assets:
+    - assets/category_icons/
     - assets/appLogo_light.png
     - assets/appLogo_dark.png
     - lib/core/utils/provider_logo/

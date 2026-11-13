@@ -1,9 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../../core/utils/theme.dart';
 
 const double _desktopBreakpoint = 1024;
 
@@ -43,19 +40,19 @@ class AppAdaptiveBody extends StatelessWidget {
             ),
             destinations: const [
               NavigationRailDestination(
-                icon: Icon(Icons.home_rounded),
+                icon: Icon(CupertinoIcons.home),
                 label: Text('Home'),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.account_balance_wallet_rounded),
+                icon: Icon(CupertinoIcons.creditcard),
                 label: Text('Accounts'),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.pie_chart_outline_rounded),
+                icon: Icon(CupertinoIcons.chart_bar),
                 label: Text('Stats'),
               ),
               NavigationRailDestination(
-                icon: Icon(Icons.settings_rounded),
+                icon: Icon(CupertinoIcons.gear),
                 label: Text('Settings'),
               ),
             ],
@@ -93,34 +90,35 @@ class AppBottomNavBar extends StatelessWidget {
       return const SizedBox.shrink();
     }
     final colors = Theme.of(context).colorScheme;
-    final appColors = Theme.of(context).extension<AppThemeColors>()!;
-    final scaler = MediaQuery.textScalerOf(context);
-    final itemHeight = math.max(56.0, scaler.scale(20) + 4 + scaler.scale(32));
-    final barHeight = math.max(74.0, itemHeight + 18);
-    Color itemColor(int i) =>
-        currentIndex == i ? colors.primary : colors.onSurfaceVariant;
-
-    Widget navItem(int i, IconData icon, String label) {
+    Widget item(int index, IconData icon, String label) {
+      final active = currentIndex == index;
       return Expanded(
         child: Semantics(
-          selected: currentIndex == i,
+          button: true,
+          selected: active,
+          excludeSemantics: true,
+          onTap: () => onTap(index),
+          label: label,
           child: InkWell(
-            onTap: () => onTap(i),
-            child: SizedBox(
-              height: itemHeight,
+            onTap: () => onTap(index),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 20, color: itemColor(i)),
-                  const SizedBox(height: 2),
+                  Icon(
+                    icon,
+                    size: 21,
+                    color: active ? colors.primary : colors.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 3),
                   Text(
                     label,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
+                    maxLines: 1,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: itemColor(i),
-                      fontWeight: FontWeight.w600,
+                      fontSize: 11,
+                      color: active ? colors.primary : colors.onSurfaceVariant,
+                      fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
                 ],
@@ -133,70 +131,60 @@ class AppBottomNavBar extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: SizedBox(
-        height: barHeight,
-        child: Stack(
-          clipBehavior: Clip.none,
-          alignment: Alignment.bottomCenter,
+      minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colors.surface,
+          borderRadius: BorderRadius.circular(28),
+          border: Border.all(
+            color: colors.outlineVariant.withValues(alpha: .5),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: colors.shadow.withValues(alpha: .12),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Row(
           children: [
-            Positioned.fill(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: appColors.navBarBackground,
-                  border: Border(
-                    top: BorderSide(color: appColors.navBarBorder),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    navItem(0, Icons.home_rounded, 'Home'),
-                    navItem(
-                      1,
-                      Icons.account_balance_wallet_rounded,
-                      'Accounts',
-                    ),
-                    const SizedBox(width: 72),
-                    navItem(2, Icons.pie_chart_outline_rounded, 'Stats'),
-                    navItem(3, Icons.settings_rounded, 'Settings'),
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: -14,
-              child: Material(
-                color: Colors.transparent,
-                child: Semantics(
-                  button: true,
-                  label: 'Add transaction',
-                  child: InkWell(
-                    onTap: onAddTap,
-                    customBorder: const CircleBorder(),
-                    child: Ink(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: appColors.navFabBackground,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.18),
-                            blurRadius: 18,
-                            offset: const Offset(0, 8),
+            item(0, CupertinoIcons.home, 'Home'),
+            item(1, CupertinoIcons.creditcard, 'Accounts'),
+            Expanded(
+              child: Semantics(
+                button: true,
+                label: 'Add transaction',
+                excludeSemantics: true,
+                onTap: onAddTap,
+                child: InkWell(
+                  onTap: onAddTap,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: colors.primary,
+                            shape: BoxShape.circle,
                           ),
-                        ],
-                      ),
-                      child: Icon(
-                        Icons.add,
-                        color: appColors.navFabForeground,
-                        size: 30,
-                      ),
+                          child: Icon(
+                            CupertinoIcons.add,
+                            size: 20,
+                            color: colors.onPrimary,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
+            item(2, CupertinoIcons.chart_bar, 'Stats'),
+            item(3, CupertinoIcons.gear, 'Settings'),
           ],
         ),
       ),

@@ -260,7 +260,7 @@ class _ShortcutsPageState extends State<ShortcutsPage> {
                         value: c.id,
                         child: Row(
                           children: [
-                            Icon(icon, size: 18, color: color),
+                            CategoryIconMapper.display(c.icon, fallback: icon, size: 18, color: color),
                             const SizedBox(width: 8),
                             Text(c.name),
                           ],
@@ -414,10 +414,13 @@ class _ShortcutsPageState extends State<ShortcutsPage> {
             ...shortcut.shortcuts.map(
               (s) => Card(
                 child: ListTile(
-                  leading: CircleAvatar(
+                  leading: CategoryIconMapper.badge(
+                    category.categories.where((c) => c.id == s.categoryId).firstOrNull?.icon,
+                    fallback: iconForCategoryId(s.categoryId), color: colorForCategoryId(s.categoryId), size: 40,
+                    regular: CircleAvatar(
                     backgroundColor: colorForCategoryId(s.categoryId).withValues(alpha: 0.16),
                     child: Icon(iconForCategoryId(s.categoryId), color: colorForCategoryId(s.categoryId)),
-                  ),
+                  )),
                   title: Text(s.label),
                   subtitle: Text(
                     '${s.type.toUpperCase()} | ${categoryNameById(s.categoryId)} | RM ${s.amount.toStringAsFixed(2)} | ${s.useDefaultAccount ? 'Default account' : 'Manual account select'}${s.requireDetailedReconfirm ? ' | Needs reconfirmation' : ''}',
