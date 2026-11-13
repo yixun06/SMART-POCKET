@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../application/controllers/category_controller.dart';
+import '../../../core/utils/category_icon_mapper.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
@@ -16,6 +17,7 @@ class _CategoryPageState extends State<CategoryPage> {
   String? _editingId;
 
   static const List<String> _iconKeys = [
+    ...CategoryIconMapper.brandKeys,
     'tag',
     'category',
     'star',
@@ -211,7 +213,11 @@ class _CategoryPageState extends State<CategoryPage> {
                               backgroundColor: iconColor.withValues(
                                 alpha: 0.16,
                               ),
-                              child: Icon(iconData, color: iconColor),
+                              child: CategoryIconMapper.display(
+                                iconKey,
+                                fallback: iconData,
+                                color: iconColor,
+                              ),
                             ),
                             title: Text(cat.name),
                             subtitle: Text(
@@ -270,7 +276,12 @@ class _CategoryPageState extends State<CategoryPage> {
             CircleAvatar(
               radius: 18,
               backgroundColor: iconColor.withValues(alpha: 0.16),
-              child: Icon(iconData, color: iconColor, size: 18),
+              child: CategoryIconMapper.display(
+                _icon,
+                fallback: iconData,
+                color: iconColor,
+                size: 18,
+              ),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -328,37 +339,88 @@ class _CategoryPageState extends State<CategoryPage> {
                   ),
                   const SizedBox(height: 10),
                   Expanded(
-                    child: GridView.builder(
-                      itemCount: _iconKeys.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 5,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 8, top: 4),
+                            child: Text('Shopping platforms', style: Theme.of(ctx).textTheme.titleSmall),
                           ),
-                      itemBuilder: (_, i) {
-                        final key = _iconKeys[i];
-                        final selected = key == _icon;
-                        final color = _iconColor(key);
-
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(14),
-                          onTap: () => Navigator.pop(ctx, key),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: selected
-                                  ? color.withValues(alpha: 0.16)
-                                  : colors.surfaceContainerHighest,
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                color: selected ? color : colors.outlineVariant,
-                                width: selected ? 1.4 : 1,
+                        ),
+                        SliverList.builder(
+                          itemCount: CategoryIconMapper.brandKeys.length,
+                          itemBuilder: (_, i) {
+                            final key = CategoryIconMapper.brandKeys[i];
+                            final selected = key == _icon;
+                            const names = {
+                              'shopee': 'Shopee', 'lazada': 'Lazada',
+                              'pinduoduo': 'Pinduoduo (PDD)', 'temu': 'Temu',
+                              'taobao': 'Taobao', 'aliexpress': 'AliExpress',
+                            };
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Semantics(
+                                button: true, selected: selected, label: names[key],
+                                child: Material(
+                                  color: selected ? colors.primaryContainer : colors.surfaceContainerHighest,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    side: BorderSide(color: selected ? colors.primary : colors.outlineVariant, width: selected ? 1.5 : 1),
+                                  ),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: InkWell(
+                                    onTap: () => Navigator.pop(ctx, key),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Row(children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(10),
+                                          child: CategoryIconMapper.display(key, fallback: _iconData(key), color: _iconColor(key), size: 52),
+                                        ),
+                                        const SizedBox(width: 14),
+                                        Expanded(child: Text(names[key]!, style: Theme.of(ctx).textTheme.titleSmall)),
+                                        Icon(selected ? Icons.check_circle : Icons.radio_button_unchecked, color: selected ? colors.primary : colors.onSurfaceVariant),
+                                      ]),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            child: Icon(_iconData(key), color: color),
+                            );
+                          },
+                        ),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16, bottom: 12),
+                            child: Text('Other icons', style: Theme.of(ctx).textTheme.titleSmall),
                           ),
-                        );
-                      },
+                        ),
+                        SliverGrid.builder(
+                          itemCount: _iconKeys.length - CategoryIconMapper.brandKeys.length,
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 5, mainAxisSpacing: 10, crossAxisSpacing: 10,
+                          ),
+                          itemBuilder: (_, i) {
+                            final key = _iconKeys[i + CategoryIconMapper.brandKeys.length];
+                            final selected = key == _icon;
+                            final color = _iconColor(key);
+                            return Semantics(
+                              button: true, selected: selected, label: key,
+                              child: Material(
+                                color: selected ? color.withValues(alpha: 0.16) : colors.surfaceContainerHighest,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                  side: BorderSide(color: selected ? color : colors.outlineVariant, width: selected ? 1.4 : 1),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: InkWell(
+                                  onTap: () => Navigator.pop(ctx, key),
+                                  child: Center(child: CategoryIconMapper.display(key, fallback: _iconData(key), color: color)),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ],

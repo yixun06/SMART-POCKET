@@ -1,6 +1,45 @@
 import 'package:flutter/material.dart';
 
 class CategoryIconMapper {
+  static const brandKeys = [
+    'shopee',
+    'lazada',
+    'pinduoduo',
+    'temu',
+    'taobao',
+    'aliexpress',
+  ];
+
+  static bool isBrand(String? key) =>
+      brandKeys.contains((key ?? '').trim().toLowerCase());
+
+  static Widget badge(String? key, {required Widget regular, required IconData fallback, required Color color, required double size}) {
+    if (!isBrand(key)) return regular;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size * 0.22),
+      child: display(key, fallback: fallback, color: color, size: size),
+    );
+  }
+
+  static Widget display(
+    String? key, {
+    required IconData fallback,
+    required Color color,
+    double size = 24,
+  }) {
+    final normalized = (key ?? '').trim().toLowerCase();
+    if (!brandKeys.contains(normalized)) {
+      return Icon(fallback, color: color, size: size);
+    }
+    return Image.asset(
+      'assets/category_icons/$normalized.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) => Icon(fallback, color: color, size: size),
+    );
+  }
+
   static IconData icon(String? key) {
     switch ((key ?? '').trim().toLowerCase()) {
       case 'tag':

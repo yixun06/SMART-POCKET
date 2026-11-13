@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -66,154 +67,160 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
         ],
       ),
-      body: AppAdaptiveBody(currentIndex: 3, child: ListView(
-        padding: const EdgeInsets.fromLTRB(14, 8, 14, 110),
-        children: [
-          _profileCard(_modeText(cfg)),
-          const SizedBox(height: 14),
-          _section(
-            title: 'Account Settings',
-            children: [
-              _navTile(
-                icon: Icons.email_outlined,
-                title: 'Change Email',
-                onTap: _openChangeEmailDialog,
-              ),
-              _navTile(
-                icon: Icons.lock_outline_rounded,
-                title: 'Change Password',
-                onTap: _openChangePasswordDialog,
-              ),
-              SwitchListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                secondary: Icon(
-                  Icons.fingerprint,
-                  color: theme.colorScheme.onSurfaceVariant,
+      body: AppAdaptiveBody(
+        currentIndex: 3,
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 36),
+          children: [
+            _profileCard(_modeText(cfg)),
+            const SizedBox(height: 14),
+            _section(
+              title: 'Account Settings',
+              children: [
+                _navTile(
+                  icon: CupertinoIcons.mail,
+                  title: 'Change Email',
+                  onTap: _openChangeEmailDialog,
                 ),
-                title: const Text('Biometric Authentication'),
-                subtitle: const Text(
-                  'Require fingerprint or face unlock when reopening the app.',
+                _navTile(
+                  icon: CupertinoIcons.lock,
+                  title: 'Change Password',
+                  onTap: _openChangePasswordDialog,
                 ),
-                value: _biometricEnabled,
-                onChanged: (auth.isLoading)
-                    ? null
-                    : (value) async {
-                        final messenger = ScaffoldMessenger.of(context);
-                        await auth.setBiometricEnabled(value);
-                        if (!mounted) return;
-                        setState(() => _biometricEnabled = value);
-                        messenger.showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              value
-                                  ? 'Biometric authentication enabled'
-                                  : 'Biometric authentication disabled',
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 3,
+                  ),
+                  secondary: _settingsIcon(CupertinoIcons.lock_shield),
+                  title: const Text('Biometric Authentication'),
+                  subtitle: const Text(
+                    'Require fingerprint or face unlock when reopening the app.',
+                  ),
+                  value: _biometricEnabled,
+                  onChanged: (auth.isLoading)
+                      ? null
+                      : (value) async {
+                          final messenger = ScaffoldMessenger.of(context);
+                          await auth.setBiometricEnabled(value);
+                          if (!mounted) return;
+                          setState(() => _biometricEnabled = value);
+                          messenger.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                value
+                                    ? 'Biometric authentication enabled'
+                                    : 'Biometric authentication disabled',
+                              ),
                             ),
-                          ),
-                        );
-                      },
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _section(
-            title: 'Customize Settings',
-            children: [
-              _navTile(
-                icon: Icons.category_outlined,
-                title: 'Manage Categories',
-                onTap: () => context.push('/categories'),
-              ),
-              _navTile(
-                icon: Icons.account_balance_wallet_outlined,
-                title: 'Monthly Budget',
-                onTap: _openBudgetEditor,
-              ),
-              _navTile(
-                icon: Icons.autorenew_rounded,
-                title: 'Recurring Transactions',
-                onTap: () => context.push('/recurring'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _section(
-            title: 'App Settings',
-            children: [
-              _modeTile(cfg),
-              SwitchListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                secondary: const Icon(Icons.dark_mode_outlined),
-                title: const Text('Dark Mode'),
-                subtitle: Text(
-                  themeCtrl.isDarkMode
-                      ? 'Dark appearance is currently enabled.'
-                      : 'Switch the app to a darker appearance.',
+                          );
+                        },
                 ),
-                value: themeCtrl.isDarkMode,
-                onChanged: themeCtrl.isLoading ? null : themeCtrl.setDarkMode,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _section(
-            title: 'Backup & Sync',
-            children: [
-              _navTile(
-                icon: Icons.cloud_upload_outlined,
-                title: 'Cloud Backup Now',
-                onTap: _createCloudBackupNow,
-              ),
-              _navTile(
-                icon: Icons.file_download_outlined,
-                title: 'Export JSON Backup',
-                onTap: _exportJsonBackup,
-              ),
-              _navTile(
-                icon: Icons.restore_outlined,
-                title: 'Restore Latest Cloud Backup',
-                onTap: _restoreLatestCloudBackup,
-              ),
-              _navTile(
-                icon: Icons.upload_file_outlined,
-                title: 'Restore From JSON File',
-                onTap: _restoreFromJsonFile,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _section(
-            title: 'Danger Zone',
-            children: [
-              _navTile(
-                icon: Icons.restart_alt_rounded,
-                title: 'Reset All Data',
-                onTap: _confirmResetAllData,
-              ),
-              _navTile(
-                icon: Icons.logout_rounded,
-                title: 'Logout',
-                onTap: () async {
-                  final router = GoRouter.of(context);
-                  final messenger = ScaffoldMessenger.of(context);
-                  final ok = await auth.logout();
-                  if (!mounted) return;
-                  if (ok) {
-                    router.go('/login');
-                  } else {
-                    messenger.showSnackBar(
-                      SnackBar(
-                        content: Text(auth.errorMessage ?? 'Logout failed'),
-                      ),
-                    );
-                  }
-                },
-                danger: true,
-              ),
-            ],
-          ),
-        ],
-      ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _section(
+              title: 'Customize Settings',
+              children: [
+                _navTile(
+                  icon: CupertinoIcons.square_grid_2x2,
+                  title: 'Manage Categories',
+                  onTap: () => context.push('/categories'),
+                ),
+                _navTile(
+                  icon: CupertinoIcons.creditcard,
+                  title: 'Monthly Budget',
+                  onTap: _openBudgetEditor,
+                ),
+                _navTile(
+                  icon: CupertinoIcons.repeat,
+                  title: 'Recurring Transactions',
+                  onTap: () => context.push('/recurring'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _section(
+              title: 'App Settings',
+              children: [
+                _modeTile(cfg),
+                SwitchListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 3,
+                  ),
+                  secondary: _settingsIcon(CupertinoIcons.moon),
+                  title: const Text('Dark Mode'),
+                  subtitle: Text(
+                    themeCtrl.isDarkMode
+                        ? 'Dark appearance is currently enabled.'
+                        : 'Switch the app to a darker appearance.',
+                  ),
+                  value: themeCtrl.isDarkMode,
+                  onChanged: themeCtrl.isLoading ? null : themeCtrl.setDarkMode,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _section(
+              title: 'Backup & Sync',
+              children: [
+                _navTile(
+                  icon: CupertinoIcons.cloud_upload,
+                  title: 'Cloud Backup Now',
+                  onTap: _createCloudBackupNow,
+                ),
+                _navTile(
+                  icon: CupertinoIcons.arrow_down_doc,
+                  title: 'Export JSON Backup',
+                  onTap: _exportJsonBackup,
+                ),
+                _navTile(
+                  icon: CupertinoIcons.cloud_download,
+                  title: 'Restore Latest Cloud Backup',
+                  onTap: _restoreLatestCloudBackup,
+                ),
+                _navTile(
+                  icon: CupertinoIcons.arrow_up_doc,
+                  title: 'Restore From JSON File',
+                  onTap: _restoreFromJsonFile,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _section(
+              title: 'Account actions',
+              children: [
+                _navTile(
+                  icon: CupertinoIcons.delete,
+                  title: 'Reset All Data',
+                  onTap: _confirmResetAllData,
+                  danger: true,
+                ),
+                _navTile(
+                  icon: CupertinoIcons.square_arrow_right,
+                  title: 'Logout',
+                  onTap: () async {
+                    final router = GoRouter.of(context);
+                    final messenger = ScaffoldMessenger.of(context);
+                    final ok = await auth.logout();
+                    if (!mounted) return;
+                    if (ok) {
+                      router.go('/login');
+                    } else {
+                      messenger.showSnackBar(
+                        SnackBar(
+                          content: Text(auth.errorMessage ?? 'Logout failed'),
+                        ),
+                      );
+                    }
+                  },
+                  danger: false,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: AppBottomNavBar(
         currentIndex: 3,
@@ -229,67 +236,83 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _profileCard(String modeText) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
+    final colors = Theme.of(context).colorScheme;
+    final displayName = _name.trim().isEmpty ? 'Your profile' : _name.trim();
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: colors.outlineVariant),
+        color: colors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: colors.outlineVariant.withValues(alpha: 0.65),
+        ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
-            radius: 26,
+            radius: 28,
             backgroundColor: colors.primaryContainer,
             child: Text(
-              _name.isNotEmpty ? _name[0].toUpperCase() : 'U',
+              _name.trim().isNotEmpty ? _name.trim()[0].toUpperCase() : 'U',
               style: TextStyle(
                 color: colors.onPrimaryContainer,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _name,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
+                  displayName,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
                     color: colors.onSurface,
                   ),
                 ),
-                Text(_email, style: TextStyle(color: colors.onSurfaceVariant)),
-                const SizedBox(height: 6),
+                if (_email.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    _email,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colors.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                    horizontal: 10,
+                    vertical: 4,
                   ),
                   decoration: BoxDecoration(
                     color: colors.primaryContainer,
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    '${modeText.toUpperCase()} MODE',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
+                    '$modeText mode',
+                    style: Theme.of(context).textTheme.labelMedium?.copyWith(
                       color: colors.onPrimaryContainer,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 4),
           IconButton(
             onPressed: _openEditProfileDialog,
-            icon: Icon(Icons.edit_outlined, color: colors.onSurfaceVariant),
+            tooltip: 'Edit profile',
+            icon: Icon(
+              CupertinoIcons.pencil,
+              color: colors.onSurfaceVariant,
+              size: 19,
+            ),
           ),
         ],
       ),
@@ -297,30 +320,61 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _section({required String title, required List<Widget> children}) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colors.outlineVariant),
-      ),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: colors.onSurfaceVariant,
-              ),
+    final colors = Theme.of(context).colorScheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 10, 4, 10),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              color: colors.onSurfaceVariant,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          ...children,
-        ],
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: colors.surface,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: colors.outlineVariant.withValues(alpha: 0.65),
+            ),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            children: [
+              for (var i = 0; i < children.length; i++) ...[
+                if (i > 0)
+                  Divider(
+                    height: 1,
+                    indent: 64,
+                    endIndent: 16,
+                    color: colors.outlineVariant.withValues(alpha: 0.55),
+                  ),
+                children[i],
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _settingsIcon(IconData icon, {bool danger = false}) {
+    final colors = Theme.of(context).colorScheme;
+    final foreground = danger ? colors.error : colors.primary;
+    return Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: danger
+            ? colors.errorContainer.withValues(alpha: 0.65)
+            : colors.primaryContainer.withValues(alpha: 0.65),
+        borderRadius: BorderRadius.circular(14),
       ),
+      child: Icon(icon, size: 20, color: foreground),
     );
   }
 
@@ -329,52 +383,69 @@ class _SettingsPageState extends State<SettingsPage> {
     required String title,
     required VoidCallback onTap,
     bool danger = false,
+    String? subtitle,
   }) {
     final colors = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: danger ? colors.error : colors.onSurfaceVariant,
-      ),
-      title: Text(
-        title,
-        style: TextStyle(
-          color: danger ? colors.error : colors.onSurface,
-          fontWeight: FontWeight.w600,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 68),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                _settingsIcon(icon, danger: danger),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: danger ? colors.error : colors.onSurface,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: 3),
+                        Text(
+                          subtitle,
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(color: colors.onSurfaceVariant),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Icon(
+                  CupertinoIcons.chevron_right,
+                  size: 16,
+                  color: colors.onSurfaceVariant,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: danger
-            ? colors.error.withValues(alpha: 0.65)
-            : colors.onSurfaceVariant,
-      ),
-      onTap: onTap,
     );
   }
 
-  Widget _modeTile(ConfigController cfg) {
-    final colors = Theme.of(context).colorScheme;
-    final modeText = _modeText(cfg);
-    return ListTile(
-      leading: Icon(
-        Icons.settings_suggest_outlined,
-        color: colors.onSurfaceVariant,
-      ),
-      title: const Text(
-        'Operating Mode',
-        style: TextStyle(fontWeight: FontWeight.w600),
-      ),
-      subtitle: Text(modeText),
-      trailing: Icon(Icons.chevron_right, color: colors.onSurfaceVariant),
-      onTap: () async {
-        await context.push('/mode');
-        if (!mounted) return;
-        await context.read<ConfigController>().loadCurrentMode();
-        setState(() {});
-      },
-    );
-  }
+  Widget _modeTile(ConfigController cfg) => _navTile(
+    icon: CupertinoIcons.slider_horizontal_3,
+    title: 'Operating Mode',
+    subtitle: _modeText(cfg),
+    onTap: () async {
+      await context.push('/mode');
+      if (!mounted) return;
+      await context.read<ConfigController>().loadCurrentMode();
+      setState(() {});
+    },
+  );
 
   Future<void> _openBudgetEditor() async {
     final ctrl = context.read<BudgetController>();

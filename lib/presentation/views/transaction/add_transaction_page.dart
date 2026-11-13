@@ -1123,7 +1123,14 @@ class _AddTransactionPageState extends State<AddTransactionPage> {
                         width: selected ? 1.4 : 1,
                       ),
                     ),
-                    child: Icon(icon, color: color, size: 20),
+                    child: Center(
+                      child: CategoryIconMapper.display(
+                        c.icon,
+                        fallback: icon,
+                        color: color,
+                        size: 20,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(

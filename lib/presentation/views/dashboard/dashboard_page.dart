@@ -229,6 +229,7 @@ class DashboardPage extends StatelessWidget {
                   amount: s.amount,
                   type: s.type,
                   icon: icon,
+                  categoryIconKey: cat.categories.where((c) => c.id == cid).firstOrNull?.icon,
                   iconColor: iconColor,
                   onTap: () async {
                     String? accountId;
@@ -457,14 +458,17 @@ class DashboardPage extends StatelessWidget {
                           horizontal: 20,
                           vertical: 8,
                         ),
-                        leading: Container(
+                        leading: CategoryIconMapper.badge(
+                          (isTransfer || isProfitEvent || isLossEvent || isAdjustment) ? null : cat.categories.where((c) => c.id == cid).firstOrNull?.icon,
+                          fallback: txIcon, color: txIconColor, size: 40,
+                          regular: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: txIconColor.withValues(alpha: 0.12),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(txIcon, color: txIconColor, size: 20),
-                        ),
+                        )),
                         title: Text(
                           titleText,
                           style: TextStyle(
@@ -593,6 +597,7 @@ class DashboardPage extends StatelessWidget {
     required double amount,
     required String type,
     required IconData icon,
+    String? categoryIconKey,
     required Color iconColor,
     required VoidCallback onTap,
   }) {
@@ -615,14 +620,16 @@ class DashboardPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
+            CategoryIconMapper.badge(
+              categoryIconKey, fallback: icon, color: iconColor, size: 48,
+              regular: Container(
               padding: const EdgeInsets.all(14), // 去掉固定宽高，改用 padding 自适应
               decoration: BoxDecoration(
                 color: bg,
                 shape: BoxShape.circle, // 圆形通常在网格里显得更协调
               ),
               child: Icon(icon, color: iconColor, size: 24),
-            ),
+            )),
             const SizedBox(height: 8),
             Text(
               label,

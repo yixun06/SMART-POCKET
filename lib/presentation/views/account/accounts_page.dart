@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,7 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   bool _negativeBalancePromptShown = false;
+  String _accountFilter = 'all';
 
   void _showNegativeBalancePrompt() {
     if (!mounted || _negativeBalancePromptShown) return;
@@ -83,22 +85,15 @@ class _AccountPageState extends State<AccountPage> {
 
         return Scaffold(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          appBar: AppBar(title: Text(mode == 'lazy' ? 'Assets' : 'Accounts')),
-          body: AppAdaptiveBody(currentIndex: 1, child: mode == 'detailed'
-              ? _buildDetailedMode(uid)
-              : _buildLazyMode(uid, isDerivedLazy: isDerivedLazy)),
-          floatingActionButton: mode == 'detailed'
-              ? FloatingActionButton(
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer,
-                  foregroundColor: Theme.of(
-                    context,
-                  ).colorScheme.onPrimaryContainer,
-                  onPressed: () => _openAccountEditor(),
-                  child: const Icon(Icons.add),
-                )
-              : null,
+          body: AppAdaptiveBody(
+            currentIndex: 1,
+            child: SafeArea(
+              bottom: false,
+              child: mode == 'detailed'
+                  ? _buildDetailedMode(uid)
+                  : _buildLazyMode(uid, isDerivedLazy: isDerivedLazy),
+            ),
+          ),
           bottomNavigationBar: AppBottomNavBar(
             currentIndex: 1,
             onTap: (i) {
@@ -114,340 +109,167 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  List<String> _buildDeviationTips({
-    required double actualSavings,
-    required double targetSavings,
-    required double actualInvest,
-    required double targetInvest,
-    required double actualDaily,
-    required double targetDaily,
-    double threshold = 8.0,
-  }) {
-    final tips = <String>[];
-
-    void check(String label, double actual, double target) {
-      final diff = actual - target;
-      if (diff.abs() >= threshold) {
-        final dir = diff > 0 ? 'above' : 'below';
-        tips.add('$label ${diff.abs().toStringAsFixed(1)}% $dir target');
-      }
-    }
-
-    check('Savings', actualSavings, targetSavings);
-    check('Investment', actualInvest, targetInvest);
-    check('Daily Use', actualDaily, targetDaily);
-
-    return tips;
-  }
-
-  Widget _assetAllocationEntryCard(String uid) {
-    final asset = context.read<AssetController>();
-    return StreamBuilder<Map<String, dynamic>>(
-      stream: asset.watchUserData(),
-      builder: (context, userSnap) {
-        final userData = userSnap.data ?? {};
-        final settings =
-            (userData[UserFields.settings] as Map<String, dynamic>?) ?? {};
-        final goal =
-            (settings['allocation_goal'] as Map<String, dynamic>?) ?? {};
-        final targets = (goal['targets'] as Map<String, dynamic>?) ?? {};
-
-        final targetSavings = ((targets['savings'] ?? 40) as num).toDouble();
-        final targetInvest = ((targets['investment'] ?? 40) as num).toDouble();
-        final targetDaily = ((targets['daily_use'] ?? 20) as num).toDouble();
-
-        return StreamBuilder<List<Map<String, dynamic>>>(
-          stream: asset.watchAccounts(),
-          builder: (context, accSnap) {
-            if (userSnap.hasError || accSnap.hasError) {
-              return const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Text('Unable to load allocation. Please try again.'),
-                ),
-              );
-            }
-            if (!userSnap.hasData || !accSnap.hasData) {
-              return const Card(
-                child: Padding(
-                  padding: EdgeInsets.all(24),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-              );
-            }
-            final docs = accSnap.data ?? [];
-
-            double total = 0;
-            double savingsBal = 0;
-            double investBal = 0;
-            double dailyBal = 0;
-
-            for (final m in docs) {
-              final bal = ((m[AccountFields.balance] ?? 0) as num).toDouble();
-              final tag = (m[AccountFields.tag] ?? '')
-                  .toString()
-                  .toUpperCase()
-                  .trim();
-
-              total += bal;
-              if (tag == 'SAVINGS') savingsBal += bal;
-              if (tag == 'INVESTMENT') investBal += bal;
-              if (tag == 'DAILY_USE') dailyBal += bal;
-            }
-
-            final actualSavings = total > 0 ? (savingsBal / total * 100) : 0.0;
-            final actualInvest = total > 0 ? (investBal / total * 100) : 0.0;
-            final actualDaily = total > 0 ? (dailyBal / total * 100) : 0.0;
-
-            double ratio(double actual, double target) {
-              if (target <= 0) return 0;
-              return (actual / target).clamp(0.0, 1.0);
-            }
-
-            final tips = _buildDeviationTips(
-              actualSavings: actualSavings,
-              targetSavings: targetSavings,
-              actualInvest: actualInvest,
-              targetInvest: targetInvest,
-              actualDaily: actualDaily,
-              targetDaily: targetDaily,
-            );
-
-            final colors = Theme.of(context).colorScheme;
-            final isDark = Theme.of(context).brightness == Brightness.dark;
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                color: colors.surfaceContainerLow,
-                border: Border.all(
-                  color: colors.outlineVariant.withValues(
-                    alpha: isDark ? 0.45 : 0.65,
-                  ),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: colors.shadow.withValues(
-                      alpha: isDark ? 0.24 : 0.08,
-                    ),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 4,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: colors.primaryContainer.withValues(
-                              alpha: isDark ? 0.6 : 0.75,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.pie_chart_outline_rounded,
-                            color: colors.onPrimaryContainer,
-                            size: 18,
-                          ),
-                        ),
-                        Text(
-                          'Asset Allocation',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w800,
-                            color: colors.onSurface,
-                            fontSize: 15,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => context.push('/allocation-goals'),
-                          child: const Text('Set Goals'),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      total > 0 ? 'Actual vs target allocation by category' : 'Your target allocation',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colors.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    if (total <= 0) ...[
-                      Text(
-                        'Actual allocation will appear when the total account balance is above RM 0.00.',
-                        style: TextStyle(fontSize: 13, color: colors.onSurfaceVariant),
-                      ),
-                      const SizedBox(height: 12),
-                      _allocationTargetRow(context, 'Savings', targetSavings),
-                      _allocationTargetRow(context, 'Investment', targetInvest),
-                      _allocationTargetRow(context, 'Daily Use', targetDaily),
-                    ] else ...[
-                    _allocRow(
-                      context,
-                      label: 'Savings',
-                      progress: ratio(actualSavings, targetSavings),
-                      actual: actualSavings,
-                      target: targetSavings,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(height: 12),
-                    _allocRow(
-                      context,
-                      label: 'Investment',
-                      progress: ratio(actualInvest, targetInvest),
-                      actual: actualInvest,
-                      target: targetInvest,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    const SizedBox(height: 12),
-                    _allocRow(
-                      context,
-                      label: 'Daily Use',
-                      progress: ratio(actualDaily, targetDaily),
-                      actual: actualDaily,
-                      target: targetDaily,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    if (tips.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 9,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.tertiaryContainer
-                              .withValues(alpha: 0.45),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.tertiary.withValues(alpha: 0.25),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Allocation deviation',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w800,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onTertiaryContainer,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            ...tips.map(
-                              (t) => Text(
-                                '- $t',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onTertiaryContainer,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    ],
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _allocationTargetRow(BuildContext context, String label, double target) {
-    final colors = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: TextStyle(color: colors.onSurface))),
-          Text('${target.toStringAsFixed(0)}% target',
-              style: TextStyle(color: colors.onSurfaceVariant, fontWeight: FontWeight.w600)),
-        ],
-      ),
-    );
-  }
-
-  Widget _allocRow(
-    BuildContext context, {
-    required String label,
-    required double progress,
-    required double actual,
-    required double target,
-    required Color color,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    final delta = actual - target;
-    final deltaText = delta == 0
-        ? 'On target'
-        : '${delta > 0 ? '+' : '-'}${delta.abs().toStringAsFixed(1)}%';
-
-    return Column(
+  Widget _accountsHeader() => Padding(
+    padding: const EdgeInsets.fromLTRB(0, 16, 0, 20),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                  color: colors.onSurface,
-                ),
-              ),
-            ),
-            Text(
-              '${actual.toStringAsFixed(0)}% / ${target.toStringAsFixed(0)}%',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: colors.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 5),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(99),
-          child: LinearProgressIndicator(
-            minHeight: 8,
-            value: progress.clamp(0.0, 1.0),
-            backgroundColor: colors.surfaceContainerHighest,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
+        Text(
+          'My Accounts',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 5),
+        const SizedBox(height: 4),
         Text(
-          deltaText,
-          style: TextStyle(
-            fontSize: 10.5,
-            color: delta == 0 ? colors.onSurfaceVariant : color,
-            fontWeight: FontWeight.w600,
+          'Manage your money',
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
       ],
+    ),
+  );
+
+  Widget _assetAllocationEntryCard(String uid) {
+    final asset = context.read<AssetController>();
+    return StreamBuilder<List<Map<String, dynamic>>>(
+      stream: asset.watchAccounts(),
+      builder: (context, snapshot) {
+        final accounts = snapshot.data;
+        final amounts = <double>[0, 0, 0];
+        double total = 0;
+        if (accounts != null) {
+          for (final account in accounts) {
+            final value = ((account[AccountFields.balance] ?? 0) as num)
+                .toDouble();
+            total += value;
+            final tag = (account[AccountFields.tag] ?? '')
+                .toString()
+                .trim()
+                .toLowerCase();
+            final index = ['savings', 'investment', 'daily_use'].indexOf(tag);
+            if (index >= 0) amounts[index] += value;
+          }
+        }
+        final canChart =
+            total > 0 &&
+            amounts.every((v) => v >= 0) &&
+            (amounts.fold<double>(0, (a, b) => a + b) - total).abs() < 0.01;
+        final palette = [
+          const Color(0xFFB4CAFF),
+          const Color(0xFF7896E1),
+          const Color(0xFFE4B88A),
+        ];
+        final labels = ['Savings', 'Investment', 'Daily Use'];
+        return Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: const Color(0xFF152E55),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: DefaultTextStyle.merge(
+            style: const TextStyle(color: Colors.white),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Allocation',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                      ),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () => context.push('/allocation-goals'),
+                      child: const Text('Edit goals'),
+                    ),
+                  ],
+                ),
+                if (snapshot.hasError)
+                  const Text('Unable to load allocation.')
+                else if (accounts == null)
+                  const SizedBox(
+                    height: 32,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (!canChart)
+                  Text(
+                    'Allocation requires positive, categorized balances.',
+                    style: TextStyle(
+                      color: const Color(0xFFCFDCF2),
+                      fontSize: 12,
+                    ),
+                  )
+                else ...[
+                  Semantics(
+                    label:
+                        'Asset allocation: ${List.generate(3, (i) => '${labels[i]} ${(amounts[i] / total * 100).toStringAsFixed(1)} percent').join(', ')}',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: SizedBox(
+                        height: 12,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: List.generate(
+                              3,
+                              (i) => SizedBox(
+                                width:
+                                    constraints.maxWidth * amounts[i] / total,
+                                child: ColoredBox(color: palette[i]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 16,
+                    runSpacing: 6,
+                    children: List.generate(
+                      3,
+                      (i) => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              color: palette[i],
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            '${labels[i]} ${(amounts[i] / total * 100).toStringAsFixed(0)}%',
+                            style: TextStyle(
+                              color: const Color(0xFFCFDCF2),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -480,7 +302,6 @@ class _AccountPageState extends State<AccountPage> {
           _negativeBalancePromptShown = false;
         }
         final safeTotalAsset = totalAsset < 0 ? 0.0 : totalAsset;
-        final safeLiquidAsset = liquidAsset < 0 ? 0.0 : liquidAsset;
 
         String normalizeTag(dynamic value) =>
             value == null ? '' : value.toString().trim().toLowerCase();
@@ -508,14 +329,10 @@ class _AccountPageState extends State<AccountPage> {
         asset.syncAssetProfile(mode: 'lazy', totalAsset: safeTotalAsset);
 
         return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
           children: [
-            _summaryCard(
-              context,
-              safeTotalAsset,
-              safeLiquidAsset,
-              accounts.length,
-            ),
+            _accountsHeader(),
+            _summaryCard(context, totalAsset, liquidAsset, accounts.length),
             const SizedBox(height: 14),
             _assetAllocationEntryCard(uid),
             const SizedBox(height: 14),
@@ -529,12 +346,23 @@ class _AccountPageState extends State<AccountPage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.info_outline_rounded, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                      Icon(
+                        Icons.info_outline_rounded,
+                        size: 18,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(
-                        'Balances are synced from Detailed Mode. Edit the original accounts there.',
-                        style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      )),
+                      Expanded(
+                        child: Text(
+                          'Balances are synced from Detailed Mode. Edit the original accounts there.',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -676,7 +504,7 @@ class _AccountPageState extends State<AccountPage> {
             ),
             const SizedBox(height: 6),
             Text(
-              'RM ${total.toStringAsFixed(2)}',
+              'RM ${NumberFormat('#,##0.00').format(total)}',
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 fontSize: 19,
@@ -1085,7 +913,6 @@ class _AccountPageState extends State<AccountPage> {
           _negativeBalancePromptShown = false;
         }
         final safeTotal = total < 0 ? 0.0 : total;
-        final safeLiquid = liquid < 0 ? 0.0 : liquid;
 
         asset.syncAssetProfile(
           mode: 'detailed',
@@ -1093,10 +920,22 @@ class _AccountPageState extends State<AccountPage> {
           includeCreatedAt: true,
         );
 
+        final filtered = _accountFilter == 'all'
+            ? accounts
+            : accounts
+                  .where(
+                    (a) =>
+                        (a[AccountFields.type] ?? '')
+                            .toString()
+                            .toLowerCase() ==
+                        _accountFilter,
+                  )
+                  .toList();
         return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
           children: [
-            _summaryCard(context, safeTotal, safeLiquid, accounts.length),
+            _accountsHeader(),
+            _summaryCard(context, total, liquid, accounts.length),
             const SizedBox(height: 14),
             _assetAllocationEntryCard(uid),
             const SizedBox(height: 14),
@@ -1117,6 +956,52 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             if (hasVirtualGenerated) const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Your Accounts',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () => _openAccountEditor(),
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('Add Account'),
+                ),
+              ],
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (final entry in const {
+                    'all': 'All accounts',
+                    'bank': 'Banks',
+                    'ewallet': 'E-wallets',
+                    'cash': 'Cash',
+                    'investment': 'Investments',
+                  }.entries)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(entry.value),
+                        selected: _accountFilter == entry.key,
+                        onSelected: (_) =>
+                            setState(() => _accountFilter = entry.key),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+            if (accounts.isNotEmpty && filtered.isEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Text('No accounts in this category yet.'),
+              ),
             if (accounts.isEmpty)
               Card(
                 shape: RoundedRectangleBorder(
@@ -1124,11 +1009,13 @@ class _AccountPageState extends State<AccountPage> {
                 ),
                 child: const Padding(
                   padding: EdgeInsets.all(16),
-                  child: Text('No accounts yet. Tap + to create one.'),
+                  child: Text(
+                    'No accounts yet. Select Add Account to get started.',
+                  ),
                 ),
               )
             else
-              ...accounts.map(_accountTile),
+              ...filtered.map(_accountTile),
           ],
         );
       },
@@ -1141,204 +1028,69 @@ class _AccountPageState extends State<AccountPage> {
     double liquid,
     int count,
   ) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
-    final cardGradient = isDark
-        ? [
-            Color.alphaBlend(
-              colors.primary.withValues(alpha: 0.24),
-              colors.surfaceContainerHigh,
-            ),
-            Color.alphaBlend(
-              colors.tertiary.withValues(alpha: 0.14),
-              colors.surfaceContainerLowest,
-            ),
-          ]
-        : [const Color(0xFFEDF5FF), const Color(0xFFF6F8FF)];
-    final titleColor = isDark ? colors.onSurface : const Color(0xFF34507A);
-    final valueColor = isDark ? colors.onSurface : const Color(0xFF18325E);
-
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: cardGradient,
-        ),
-        border: Border.all(
-          color: isDark
-              ? colors.outlineVariant.withValues(alpha: 0.48)
-              : const Color(0xFFD2E2FF),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colors.shadow.withValues(alpha: isDark ? 0.22 : 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+    final money = NumberFormat('#,##0.00');
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Expanded(child: Text(
-                'Total Assets',
-                style: TextStyle(
-                  color: titleColor,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w700,
-                ),
-              )),
-              Icon(Icons.account_balance_wallet_rounded, color: titleColor, size: 20),
-            ],
-          ),
-          const SizedBox(height: 14),
           Text(
-            'RM ${total.toStringAsFixed(2)}',
+            'Total assets',
             style: TextStyle(
-              color: valueColor,
-              fontSize: 30,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.8,
+              color: colors.onSurfaceVariant,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'RM ${money.format(total)}',
+            style: TextStyle(
+              color: colors.onSurface,
+              fontSize: 32,
+              fontWeight: FontWeight.w700,
+              letterSpacing: -1,
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            'Across all linked accounts',
-            style: TextStyle(
-              color: titleColor.withValues(alpha: isDark ? 0.88 : 0.78),
-              fontSize: 12,
-              height: 1.2,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Divider(height: 1, color: colors.outlineVariant),
-          const SizedBox(height: 12),
-          Row(
+          Wrap(
+            spacing: 20,
+            runSpacing: 4,
             children: [
-              Expanded(
-                child: _summaryStatTile(
-                  context: context,
-                  label: 'Liquid',
-                  value: 'RM ${liquid.toStringAsFixed(2)}',
-                ),
+              Text(
+                'Liquid assets  RM ${money.format(liquid)}',
+                style: TextStyle(color: colors.onSurfaceVariant, fontSize: 13),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _summaryStatTile(
-                  context: context,
-                  label: 'Accounts',
-                  value: '$count',
-                ),
+              Text(
+                '$count accounts',
+                style: TextStyle(color: colors.onSurfaceVariant, fontSize: 13),
               ),
             ],
           ),
         ],
       ),
-    );
-  }
-
-  Widget _summaryStatTile({
-    required BuildContext context,
-    required String label,
-    required String value,
-  }) {
-    final colors = Theme.of(context).colorScheme;
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(color: colors.onSurfaceVariant, fontSize: 11),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: TextStyle(
-              color: colors.onSurface,
-              fontWeight: FontWeight.w800,
-              fontSize: 13,
-            ),
-          ),
-        ],
     );
   }
 
   Widget _accountTile(Map<String, dynamic> a) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
     final docId = a['docId'].toString();
-
     final name = (a[AccountFields.name] ?? 'Account').toString();
-
     final provider = (a[AccountFields.provider] ?? name).toString();
-
     final type = (a[AccountFields.type] ?? 'cash').toString().toLowerCase();
-
     final balance = ((a[AccountFields.balance] ?? 0) as num).toDouble();
-
-    final isLiquid = (a[AccountFields.isLiquid] ?? true) == true;
-
     final tag = (a[AccountFields.tag] ?? 'DAILY_USE').toString();
-
-    final providerAvatar = ProviderAvatar.providerAvatar(
-      context,
-      provider,
-      type: type,
-      size: 58,
-    );
-
-    Widget buildChip(String label, {Color? bg, Color? fg}) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color:
-              bg ??
-              (isDark
-                  ? colors.surfaceContainerHighest
-                  : colors.primaryContainer.withValues(alpha: 0.6)),
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            color: fg ?? colors.onSurface,
-            letterSpacing: .3,
-          ),
-        ),
-      );
-    }
-
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: isDark ? colors.surfaceContainerLow : colors.surface,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: colors.outlineVariant.withValues(alpha: isDark ? 0.34 : 0.18),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.14)
-                : colors.shadow.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+        border: Border(
+          bottom: BorderSide(
+            color: colors.outlineVariant.withValues(alpha: .5),
           ),
-        ],
+        ),
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(22),
         onTap: () async {
           final uid = context.read<AssetController>().uid;
           if (uid == null) return;
@@ -1373,82 +1125,62 @@ class _AccountPageState extends State<AccountPage> {
           await _openAccountEditor(accountId: docId, existing: a);
         },
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              providerAvatar,
-
-              const SizedBox(width: 14),
-
+              ProviderAvatar.providerAvatar(
+                context,
+                provider,
+                type: type,
+                size: 44,
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       name,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
                         color: colors.onSurface,
-                        height: 1.15,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-
-                    const SizedBox(height: 3),
-
+                    const SizedBox(height: 4),
                     Text(
-                      provider,
+                      type == 'ewallet'
+                          ? 'E-wallet'
+                          : (type.isEmpty
+                                ? 'Account'
+                                : '${type[0].toUpperCase()}${type.substring(1)}'),
                       style: TextStyle(
-                        fontSize: 12,
                         color: colors.onSurfaceVariant,
-                        height: 1.15,
+                        fontSize: 12,
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: [
-                        buildChip(type.toUpperCase()),
-
-                        buildChip(
-                          isLiquid ? 'LIQUID' : 'NON-LIQUID',
-                          bg: isLiquid
-                              ? Colors.green.withValues(alpha: 0.12)
-                              : Colors.orange.withValues(alpha: 0.12),
-                          fg: isLiquid
-                              ? Colors.green.shade700
-                              : Colors.orange.shade700,
-                        ),
-
-                        buildChip(tag),
-                      ],
                     ),
                   ],
                 ),
               ),
-
-              const SizedBox(width: 10),
-
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'RM ${balance.toStringAsFixed(2)}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                      color: colors.onSurface,
-                    ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  'RM ${NumberFormat('#,##0.00').format(balance)}',
+                  textAlign: TextAlign.end,
+                  style: TextStyle(
+                    color: colors.onSurface,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                   ),
-
-                  const SizedBox(height: 8),
-
-                  Icon(Icons.chevron_right_rounded, color: colors.outline),
-                ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: colors.onSurfaceVariant,
               ),
             ],
           ),
@@ -2186,6 +1918,7 @@ class _AccountPageState extends State<AccountPage> {
       );
     }
 
+    var providerQuery = '';
     final ok = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
@@ -2263,9 +1996,14 @@ class _AccountPageState extends State<AccountPage> {
                 );
               }
 
-              final providersForType = MalaysiaProviderPresets.providersByType(
-                type,
-              );
+              final providersForType =
+                  MalaysiaProviderPresets.providersByType(type)
+                      .where(
+                        (p) => p.providerName.toLowerCase().contains(
+                          providerQuery.toLowerCase(),
+                        ),
+                      )
+                      .toList();
 
               return Container(
                 decoration: BoxDecoration(
@@ -2379,6 +2117,16 @@ class _AccountPageState extends State<AccountPage> {
                                       fontWeight: FontWeight.w700,
                                       color: colors.onSurfaceVariant,
                                       letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  TextField(
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(Icons.search),
+                                      hintText: 'Search providers',
+                                    ),
+                                    onChanged: (value) => setModal(
+                                      () => providerQuery = value.trim(),
                                     ),
                                   ),
                                   const SizedBox(height: 10),
